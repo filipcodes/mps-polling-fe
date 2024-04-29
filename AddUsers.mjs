@@ -7,7 +7,7 @@ import { doc, setDoc } from 'firebase/firestore'
 import { getFirestore } from 'firebase/firestore'
 
 // CREATE ATENDEES LIST
-const atendees = []
+const attendees = []
 
 fs.createReadStream('data.csv')
   .pipe(
@@ -15,7 +15,7 @@ fs.createReadStream('data.csv')
       mapHeaders: ({ header, index }) => header.toLowerCase()
     })
   )
-  .on('data', (data) => atendees.push(data))
+  .on('data', (data) => attendees.push(data))
   .on('end', () => {
     console.log('atendees list created')
   })
@@ -43,25 +43,28 @@ export const db = getFirestore(FirebaseApp)
 
 const auth = getAuth()
 
-const testAtendees = [
-  {
-    name: 'Vivien Vamosova',
-    email: 'vivien.vamosova@student.leaf.academy',
-    code: '333333'
+// const testAttendees = [
+//   {
+//     name: 'Vivien Vamosova',
+//     email: 'vivien.vamosova@student.leaf.academy',
+//     code: '333333'
+//   }
+// ]
+setTimeout(async () => {
+  for (const attendee of attendees) {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      attendee.email,
+      attendee.code
+    )
+
+    console.log(`succesfuly created user with email: ${attendee.email}`)
+    let user = userCredential.user
+
+    await setDoc(doc(db, 'users', user.uid), {
+      name: attendee.name,
+      email: attendee.email,
+      code: attendee.code
+    })
   }
-]
-
-for (const atendee of testAtendees) {
-  const userCredential = await createUserWithEmailAndPassword(
-    auth,
-    atendee.email,
-    atendee.code
-  )
-
-  let user = userCredential.user
-
-  await setDoc(doc(db, 'users', user.uid), {
-    vybor: 'zahranicny'
-  })
-  console.log('success!')
-}
+}, 2000)

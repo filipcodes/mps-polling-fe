@@ -15,6 +15,10 @@
   font-family: 'Roboto', sans-serif;
 }
 
+input:focus {
+  box-shadow: 0 0 0 4px #3b83f681;
+}
+
 p,
 span,
 a,

@@ -1,6 +1,22 @@
 <script setup>
 import ButtonLink from '@/components/ButtonLink.vue'
-// import { socketState, socket } from '@/states/socketState'
+import { get } from 'firebase/database'
+import { user } from '@/states/userState.js'
+
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  addDoc,
+  query,
+  where,
+  onSnapshot,
+  doc,
+  updateDoc,
+  setDoc
+} from 'firebase/firestore'
+
+import Cookies from 'js-cookie'
 </script>
 <template>
   <li
@@ -15,12 +31,12 @@ import ButtonLink from '@/components/ButtonLink.vue'
         hlasovanie {{ poll.number }}: <span>{{ poll.name }}</span>
       </h3>
       <ButtonLink
-        :type="selected ? 'primary' : 'inactive'"
+        :type="selected && isActive ? 'primary' : 'inactive'"
         class="w-full sm:w-fit"
         @click="handleVote"
       >
         <div class="flex items-center gap-3 justify-center bevan">
-          Hlasovať
+          {{ isActive ? 'Hlasovať' : 'Ohdlasované' }}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -38,7 +54,7 @@ import ButtonLink from '@/components/ButtonLink.vue'
     <div class="grid sm:grid-cols-3 grid-cols-2 sm:gap-4 gap-2 w-full">
       <ButtonLink
         v-for="option in poll.options"
-        type="pollOption"
+        :type="isActive ? 'pollOption' : 'inactive'"
         @click="selected = option"
         :class="[
           selected === option ? 'outline-2 outline-blue-700 shadow-blue' : '',
@@ -55,21 +71,55 @@ export default {
   name: 'PollPreview',
   data() {
     return {
-      selected: ''
+      selected: '',
+      isActive: true
     }
   },
   props: {
     poll: {
+      id: String,
       type: Object,
       required: true
     }
   },
+  mounted() {
+    console.log('I got mounted')
+    const storedValue = Cookies.get('IsActive')
+    console.log(typeof storedValue)
+    if (storedValue) {
+      this.isActive = storedValue === 'true'
+    }
+  },
+
   methods: {
-    handleVote() {
-      // socket.emit('vote', this.selected, () => {
-      //   console.log('callback!')
+    async handleVote() {
+      if (!this.selected || !this.isActive) return
+      this.finalSelection = this.selected
+      this.isActive = false
+
+      Cookies.set('IsActive', this.isActive, { expires: 7 }) // Expires in 7 days
+      // Assuming you have already initialized the Firestore instance
+      const db = getFirestore()
+      // Create a new vote object
+      // const relevantPoll = doc(db, 'polls', this.poll.id)
+      // await db.collection('votes').doc(pollId).set({
+      //   pollId: this.poll.id,
+      //   vote: this.selected
+      // })
+      const docRef = doc(collection(db, this.poll.id), user.data.uid) //TODO add user.data.uid after prod
+      await setDoc(docRef, {
+        pollId: this.poll.id,
+        userId: user.data.uid,
+        vote: this.selected
+      })
+
+      // await updateDoc(relevantPoll, {
+      //   votes: ['kokot']
       // })
     }
+  },
+  unmounted() {
+    Cookies.remove('IsActive')
   },
   components: [ButtonLink]
 }

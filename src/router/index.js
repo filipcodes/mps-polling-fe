@@ -6,7 +6,10 @@ import { onAuthStateChanged, getAuth } from 'firebase/auth'
 const routes = [
   {
     path: '/',
-    component: () => import('@/layouts/default/Default.vue')
+    component: () => import('@/layouts/default/Default.vue'),
+    meta: {
+      redirectToSignIn: true
+    }
   },
   {
     path: '/signIn',
@@ -20,6 +23,14 @@ const routes = [
     component: () => import('@/views/AtendeeDashboard.vue'),
     meta: {
       requiresAuth: true
+    }
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: () => import('@/views/AdminDashboard.vue'),
+    meta: {
+      filipAuth: true
     }
   },
   {
@@ -53,21 +64,49 @@ const getCurrentUser = () => {
 router.beforeEach(async (to, from, next) => {
   // checks if the "to" route requires authentication
 
+  //! this is the part that checks if the user is signed in
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    // if a user is signedIn
+    console.log('guard1')
+    //! if a user is signedIn, keep him going
     if (await getCurrentUser()) {
       next()
+      //! if not, send him to the forbidden page
     } else {
       console.error('Gotta be logged in to access this. Sorry')
       next('/forbidden')
     }
+    //! now in case of redirectIfLoggedIn, we check if the user is logged in
   } else if (to.matched.some((record) => record.meta.redirectIfLoggedIn)) {
+    console.log('guard2')
+
     if (await getCurrentUser()) {
+      //! in case that is so, we redirect to the dashboard
       next('/dashboard')
+      //! in case Notification, we let him register
     } else {
       next()
     }
+  } else if (to.matched.some((record) => record.meta.redirectToSignIn)) {
+    console.log('guard3')
+
+    next('/signIn')
+  } else if (to.matched.some((record) => record.meta.filipAuth)) {
+    console.log('guard4')
+
+    if (await getCurrentUser()) {
+      if (user.data.email === 'filipsipo@gmail.com') {
+        console.log('welcome, lord filip')
+        next()
+      } else {
+        console.error('You are not Filip. I hereby banish you')
+        next('/forbidden')
+      }
+    } else {
+      next('/forbidden')
+    }
   } else {
+    console.log('guard5')
+
     next()
   }
 })

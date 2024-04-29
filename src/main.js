@@ -52,6 +52,7 @@ onAuthStateChanged(auth, (detectedUser) => {
     user.setSignedIn(true)
     user.setUser(detectedUser)
     console.log('User signed in')
+    console.log(detectedUser)
   } else {
   }
 })

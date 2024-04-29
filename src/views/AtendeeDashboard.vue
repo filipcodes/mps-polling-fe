@@ -1,6 +1,14 @@
 <script setup>
 import { user } from '@/states/userState.js'
-// import { socketState, socket } from '@/states/socketState'
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  addDoc,
+  query,
+  where,
+  onSnapshot
+} from 'firebase/firestore'
 import { signIn } from '@/states/signInStates.js'
 </script>
 <template>
@@ -42,8 +50,10 @@ import { signIn } from '@/states/signInStates.js'
       <div class="flex justify-between items-center p-2 pl-4">
         <div class="">
           <p class="text-gray-500 font-medium mb-[-3px]">Prihlásený ako:</p>
-          <p class="font-bold text-lg text-gray-800 tracking-wider">
-            {{ user.data.email }}
+          <p
+            class="font-bold text-lg text-gray-800 tracking-wider text-ellipsis max-w-48 overflow-hidden"
+          >
+            {{ user.data.email }}{{ user.data.email }}
           </p>
         </div>
         <SignOutButton></SignOutButton>
@@ -59,23 +69,27 @@ import PollPreview from '@/components/atendeeDashboard/PollPreview.vue'
 export default {
   data() {
     return {
-      activePolls: [
-        {
-          number: '4',
-          name: 'Zníženie dane z príjmu',
-          options: ['Za', 'Proti', 'Vzdávam sa hlasovania']
-        }
-      ]
+      activePolls: []
     }
   },
-  computed: {
-    // connected() {
-    //   return socketState.connected
-    // }
-  },
+
   mounted() {
-    console.log(user.data.email)
-    // socket.connect()
+    const db = getFirestore()
+
+    const colRef = collection(db, 'polls')
+
+    const q = query(colRef, where('isActive', '==', true))
+
+    // display activePolls on change
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      console.log(querySnapshot)
+      const polls = []
+      querySnapshot.forEach((doc) => {
+        polls.push(doc.data())
+      })
+
+      this.activePolls = polls
+    })
   },
   components: [SignOutButton, PollPreview]
 }
