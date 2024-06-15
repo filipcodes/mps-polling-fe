@@ -3,7 +3,7 @@ import SignOutButton from '@/components/atendeeDashboard/SignOutButton.vue'
 </script>
 <template>
   <div
-    class="min-w-64 max-w-80 p-2 pt-0 bg-red-600 text-white h-full roboto flex flex-col justify-between"
+    class="min-w-64 max-w-80 p-2 pt-0 bg-red-700 text-white h-full roboto flex flex-col justify-between"
   >
     <div class="flex items-center gap-4 p-4 border-b-[1.5px] border-red-700">
       <div
@@ -67,6 +67,7 @@ import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiVote } from '@mdi/js'
 import { mdiAccountMultiple } from '@mdi/js'
 import { mdiHistory } from '@mdi/js'
+import { mdiCog } from '@mdi/js'
 
 export default {
   name: 'Sidebar',
@@ -93,6 +94,11 @@ export default {
           name: 'História',
           icon: mdiHistory,
           route: '/admin/history'
+        },
+        {
+          name: 'Nastavenia',
+          icon: mdiCog,
+          route: '/admin/settings'
         }
       ]
     }

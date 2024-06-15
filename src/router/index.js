@@ -36,7 +36,7 @@ const routes = [
       {
         path: '/admin/users',
         name: 'userManagement',
-        component: () => import('@/views/ManageUsers.vue')
+        component: () => import('@/views/AdminUserManagement.vue')
       },
       {
         path: '/admin/polls',
@@ -44,6 +44,10 @@ const routes = [
       },
       {
         path: '/admin/history',
+        component: () => import('@/views/AdminHistory.vue')
+      },
+      {
+        path: '/admin/settings',
         component: () => import('@/views/AdminHistory.vue')
       }
     ]
