@@ -3,8 +3,6 @@ import ButtonLink from '@/components/ButtonLink.vue'
 import {
   getFirestore,
   collection,
-  getDocs,
-  addDoc,
   query,
   where,
   onSnapshot,
@@ -12,20 +10,18 @@ import {
   doc,
   setDoc
 } from 'firebase/firestore'
-import Cookies from 'js-cookie'
 </script>
 <template>
-  <div class="p-5">
-    <h1 class="text-3xl font-bold">Admin Dashboard</h1>
-
-    <p>This is the admin dashboard. You can manage users here.</p>
+  <div class="p-5 roboto">
+    <h1 class="text-4xl font-bold roboto">Správca Hlasovania</h1>
+    <p>Sekcia na spravovanie hlasovaní</p>
     <div class="flex flex-row gap-12">
       <form
         @submit.prevent="handleCreatePoll"
         @keydown.enter.prevent="console.log('enter')"
         class="shadow-lg p-4 rounded-lg border border-gray-200 max-w-96 text-center"
       >
-        <h2 class="text-3xl font-medium mb-4">Nové Hlasovanie</h2>
+        <h2 class="roboto text-3xl font-medium mb-4">Vytvoriť Hlasovanie</h2>
         <div class="mb-2">
           <input
             id="pollName"
@@ -37,7 +33,7 @@ import Cookies from 'js-cookie'
           />
         </div>
         <div class="flex justify-between items-center mb-8">
-          <label for="pollNumber" class="font-semibold"
+          <label for="pollNumber" class="font-semibold roboto"
             >Číslo hlasovania:</label
           >
           <input
@@ -50,11 +46,11 @@ import Cookies from 'js-cookie'
             class="rounded-md text-lg px-3 py-2 w-24 border-2 border-gray-300"
           />
         </div>
-        <h3 class="text-lg tracking-wider font-medium mb-3 uppercase">
-          Možnosti
+        <h3 class="roboto text-lg tracking-wide font-medium mb-3 uppercase">
+          Možnosti:
         </h3>
         <ul
-          class="flex gap-2 flex-col w-full mb-8 items-center max-h-72 p-2 overflow-y-scroll outline-none"
+          class="roboto flex gap-2 flex-col w-full mb-8 items-center max-h-72 p-2 overflow-y-scroll outline-none"
         >
           <li
             v-for="option in pollOptions"
@@ -132,7 +128,7 @@ import Cookies from 'js-cookie'
 const db = getFirestore()
 let colRef = collection(db, 'polls')
 export default {
-  name: 'AdminDashboard',
+  name: 'AdminPolls',
   data() {
     return {
       pollNumber: 1,

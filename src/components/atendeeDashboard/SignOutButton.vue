@@ -1,6 +1,7 @@
 <script setup>
 import ButtonLink from '@/components/ButtonLink.vue'
 </script>
+
 <template>
   <ButtonLink type="tertiary" @click="handleSignOut">Odhlásiť sa</ButtonLink>
 </template>

@@ -28,10 +28,25 @@ const routes = [
   {
     path: '/admin',
     name: 'admin',
-    component: () => import('@/views/AdminDashboard.vue'),
+    component: () => import('@/layouts/admin/AdminLayout.vue'),
     meta: {
       filipAuth: true
-    }
+    },
+    children: [
+      {
+        path: '/admin/users',
+        name: 'userManagement',
+        component: () => import('@/views/ManageUsers.vue')
+      },
+      {
+        path: '/admin/polls',
+        component: () => import('@/views/AdminPolls.vue')
+      },
+      {
+        path: '/admin/history',
+        component: () => import('@/views/AdminHistory.vue')
+      }
+    ]
   },
   {
     path: '/forbidden',
