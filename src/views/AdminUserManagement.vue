@@ -1,15 +1,10 @@
 <template>
-  <ViewHeader subtitle="Sekcia na spravovanie účastníckych profilov"
-    >Správa Účastníkov</ViewHeader
-  >
-  <UserList></UserList>
-  <!-- 
-  Features needed:
-  - list of users
-  - reset poslanecky kod
-  - send poslanecky kod to email
-  - link to firebase auth console
-  -->
+  <div class="flex flex-col justify-between h-full">
+    <ViewHeader subtitle="Sekcia na spravovanie účastníckych profilov"
+      >Správa Účastníkov</ViewHeader
+    >
+    <UserList></UserList>
+  </div>
 </template>
 
 <script>

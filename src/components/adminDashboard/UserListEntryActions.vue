@@ -3,6 +3,7 @@ import { mdiContentCopy } from '@mdi/js'
 import { mdiEmailFast } from '@mdi/js'
 import { mdiRefresh } from '@mdi/js'
 import { mdiPencil } from '@mdi/js'
+import { mdiTrashCan } from '@mdi/js'
 </script>
 <template>
   <div class="flex gap-1 border-l pl-2">
@@ -37,8 +38,13 @@ export default {
         },
         {
           icon: mdiPencil,
-          title: 'Zmeniť údaje o používateľovi',
+          title: 'Zmeniť údaje o účastníkovi',
           emit: 'edit-user'
+        },
+        {
+          icon: mdiTrashCan,
+          title: 'Odstrániť účastníka',
+          emit: 'delete-user'
         }
       ]
     }

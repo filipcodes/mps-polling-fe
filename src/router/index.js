@@ -28,6 +28,7 @@ const routes = [
   {
     path: '/admin',
     name: 'admin',
+    redirect: '/admin/users',
     component: () => import('@/layouts/admin/AdminLayout.vue'),
     meta: {
       filipAuth: true

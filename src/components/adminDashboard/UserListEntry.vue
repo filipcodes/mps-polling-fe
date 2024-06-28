@@ -1,31 +1,87 @@
 <script setup>
 import { mdiContentCopy } from '@mdi/js'
-import { mdiEmailFast } from '@mdi/js'
-import { mdiRefresh } from '@mdi/js'
-import { mdiPencil } from '@mdi/js'
+import { mdiStarFourPointsCircle } from '@mdi/js'
+import { mdiStarFourPoints } from '@mdi/js'
+import { mdiContentSave } from '@mdi/js'
+// This has to be imported before the Firebase call, so that the tags are available in correct color
+import { tags } from '@/states/tags'
 </script>
 <template>
   <li
     class="table-grid group/user items-center border-b border-gray-200 px-4 py-3 transition-all duration-200 hover:bg-gray-100"
   >
-    <!-- USERNAME -->
-    <span>{{ user.name }}</span>
+    <!-- USERNAME AND WHETHER IT IS A CHAIRMAN/DEPUTY CHAIRMAN OF THE PARTY-->
+    <div class="">
+      <input
+        v-if="isEditing"
+        v-model="user.name"
+        class="w-min font-medium px-1 rounded-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+      />
+      <div v-else class="flex items-center gap-1">
+        <span class="font-medium">{{ user.name }}</span>
+
+        <!-- ! PREDSEDA -->
+        <span
+          v-if="user?.positions?.includes('predseda')"
+          :class="['text-xs rounded-sm']"
+          title="Predseda strany"
+        >
+          <svg-icon
+            type="mdi"
+            size="20"
+            :path="mdiStarFourPointsCircle"
+            :class="`text-${tags.parties[user.party]?.color} `"
+          ></svg-icon>
+        </span>
+
+        <!-- ! PODPREDSEDA -->
+        <span
+          v-if="user?.positions?.includes('podpredseda')"
+          :class="['text-xs rounded-sm']"
+          title="Podpredseda strany"
+        >
+          <svg-icon
+            type="mdi"
+            size="16"
+            :path="mdiStarFourPoints"
+            :class="`text-${tags.parties[user.party]?.color}`"
+          ></svg-icon>
+        </span>
+      </div>
+    </div>
 
     <!-- EMAIL -->
-    <span class="overflow-hidden max-w-56 text-ellipsis">
-      {{ user.email }}
+
+    <input
+      v-if="isEditing"
+      v-model="user.email"
+      class="w-fit px-1 rounded-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+    />
+    <span v-else class="overflow-hidden max-w-56 text-ellipsis text-gray-500">
+      <a class="hover:underline" :href="`mailto:${user.email}`">
+        {{ user.email }}
+      </a>
     </span>
 
     <!-- PARTY -->
-    <span class="bg-gray-300 w-fit block px-1 rounded-sm">
+    <span
+      :class="['w-fit block px-1 rounded-sm', tags.parties[user.party]?.tag]"
+    >
       {{ user.party }}
     </span>
 
     <!-- COMMITTEE -->
-    <span class="bg-purple-300 w-fit block px-1 rounded-sm">
-      {{ user.committee }}
-    </span>
-
+    <div class="">
+      <span
+        v-if="user.committee"
+        :class="[
+          'w-fit block px-1 rounded-sm border-2',
+          tags.committees[user.committee]
+        ]"
+      >
+        {{ user.committee }}
+      </span>
+    </div>
     <!-- CODE -->
     <span class="w-fit block font-medium tracking-wider">
       <div
@@ -45,11 +101,28 @@ import { mdiPencil } from '@mdi/js'
 
     <!-- ACTIONS -->
     <UserListEntryActions
+      v-if="!isEditing"
       class="text-transparent fill-transparent group-hover/user:text-gray-700 group-hover:fill-gray-700 transition-all duration-200"
       @send-code-to-email="sendCodeToEmail(user.email, user.code)"
       @reset-code="resetUserCode()"
-      @edit-user="editUser()"
+      @edit-user="isEditing = true"
     ></UserListEntryActions>
+
+    <!-- EDITING ACTIONS - SAVE -->
+    <div class="flex justify-center items-center" v-else>
+      <button
+        @click="saveEdit()"
+        class="hover:bg-gray-300 mx-2 items-center rounded-sm p-1 group transition-all duration-200 flex justify-center gap-2 hover:cursor-pointer"
+      >
+        <span class="roboto text-sm font-medium tracking-wide"> Uložiť </span>
+        <svg-icon
+          type="mdi"
+          size="20"
+          :path="mdiContentSave"
+          class="text-gray-800 transition-all duration-200"
+        ></svg-icon>
+      </button>
+    </div>
   </li>
 </template>
 
@@ -57,21 +130,15 @@ import { mdiPencil } from '@mdi/js'
 import emailjs from '@emailjs/browser'
 import SvgIcon from '@jamescoyle/vue-icon'
 import UserListEntryActions from '@/components/adminDashboard/UserListEntryActions.vue'
+import { doc, updateDoc } from 'firebase/firestore'
+import { getFirestore } from 'firebase/firestore'
+const db = getFirestore()
 
 export default {
   name: 'UserListEntry',
   data() {
     return {
-      actions: [
-        {
-          icon: mdiEmailFast,
-          title: 'Poslať poslanecký kód na email'
-        },
-        {
-          icon: mdiRefresh,
-          title: 'Obnoviť poslanecký kód'
-        }
-      ]
+      isEditing: false
     }
   },
   props: {
@@ -114,15 +181,45 @@ export default {
     async resetUserCode() {
       try {
         // Reset code logic here
-        alert('Code reset')
+        const userRef = doc(db, 'users', this.user.id)
+        const newCode = Math.floor(Math.random() * 1000000)
+          .toString()
+          .padStart(6, '0')
+
+        // Handling the 1 in a million chance that the new code is the same as the old one
+        if (newCode === this.user.code) {
+          this.resetUserCode()
+        }
+
+        //TODO: Also compare to other codes in the database
+
+        await updateDoc(userRef, {
+          code: newCode
+        })
+
+        this.user.code = newCode
+        alert('Code reset successfully!')
       } catch (error) {
-        alert('Failed to reset code')
+        alert('Failed to reset code', error)
       }
     },
-    editUser() {
+    async saveEdit() {
       // Edit user logic here
-      alert('User edited')
-      alert('Failed to edit user')
+      try {
+        const userRef = doc(db, 'users', this.user.id)
+        await updateDoc(userRef, {
+          name: this.user.name,
+          email: this.user.email,
+          party: this.user.party,
+          committee: this.user.committee
+        })
+
+        this.isEditing = false
+        alert('User edits saved successfully!')
+      } catch (error) {
+        console.log(error)
+        alert('Failed to save user edits', error)
+      }
     }
   },
   components: {
