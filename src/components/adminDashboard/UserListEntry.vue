@@ -5,6 +5,7 @@ import { mdiStarFourPoints } from '@mdi/js'
 import { mdiContentSave } from '@mdi/js'
 // This has to be imported before the Firebase call, so that the tags are available in correct color
 import { tags } from '@/states/tags'
+import { alert } from '@/states/bottomAlert.js'
 </script>
 <template>
   <li
@@ -157,11 +158,13 @@ export default {
     async copyToClipboard(code) {
       try {
         await navigator.clipboard.writeText(code)
-        alert('Code copied to clipboard')
+        alert.success(`Code copied to clipboard`)
       } catch (error) {
-        alert('Failed to copy code to clipboard')
+        alert.error(`Failed to copy code to clipboard`)
+        console.log(error)
       }
     },
+
     async sendCodeToEmail(email, code) {
       console.log(code, email)
       try {
@@ -175,10 +178,10 @@ export default {
           },
           'FHX5JHLwJKqHdyPTP'
         )
-        alert(`Email with code sent to ${email}`)
-        console.log('Email with code sent successfully!')
+        alert.show(`Email successfully sent to ${email}`)
       } catch (error) {
-        console.log('FAILED...', error)
+        alert.show(`Failed to send email to ${email}`)
+        console.log(error)
       }
     },
     async resetUserCode() {
@@ -201,9 +204,10 @@ export default {
         })
 
         this.user.code = newCode
-        alert('Code reset successfully!')
+        alert.show(`User code for ${this.user.name} reset successfully!`)
       } catch (error) {
-        alert('Failed to reset code', error)
+        alert.show(`Failed to reset user code for ${this.user.name}`)
+        console.log(error)
       }
     },
 
@@ -218,16 +222,16 @@ export default {
         this.$emit('deleted-user')
 
         // Delete user from the Firebase auth
-        try {
-          // Admin SDK needed for this to work
-        } catch (error) {
-          console.log(error)
-          alert('Failed to delete user from auth', error)
-        }
-        alert('User deleted successfully!')
+        // try {
+        //   // Admin SDK needed for this to work
+        // } catch (error) {
+        //   console.log(error)
+        //   alert('Failed to delete user from auth', error)
+        // }
+        alert.show(`User ${this.user.name} deleted successfully!`)
       } catch (error) {
+        alert.show(`Failed to delete ${this.user.name}`)
         console.log(error)
-        alert('Failed to delete user', error)
       }
     },
 
@@ -241,12 +245,11 @@ export default {
           party: this.user.party,
           committee: this.user.committee
         })
-
         this.isEditing = false
-        alert('User edits saved successfully!')
+        alert.show(`User edits for ${this.user.name} saved successfully!`)
       } catch (error) {
+        alert.show(`Failed to save user edits for ${this.user.name}`)
         console.log(error)
-        alert('Failed to save user edits', error)
       }
     }
   },
