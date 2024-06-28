@@ -158,9 +158,9 @@ export default {
     async copyToClipboard(code) {
       try {
         await navigator.clipboard.writeText(code)
-        alert.success(`Code copied to clipboard`)
+        alert.success(`Poslanecký kód bol skopírovaný do schránky!`)
       } catch (error) {
-        alert.error(`Failed to copy code to clipboard`)
+        alert.error(`Nepodarilo sa skopírovať poslanecký kód do schránky!`)
         console.log(error)
       }
     },
@@ -178,12 +178,13 @@ export default {
           },
           'FHX5JHLwJKqHdyPTP'
         )
-        alert.show(`Email successfully sent to ${email}`)
+        alert.success(`Email bol úspešne odoslaný na "${email}"`)
       } catch (error) {
-        alert.show(`Failed to send email to ${email}`)
+        alert.error(`Na adresu "${email}" sa nepodarilo odoslať email!`)
         console.log(error)
       }
     },
+
     async resetUserCode() {
       try {
         // Reset code logic here
@@ -197,16 +198,18 @@ export default {
           this.resetUserCode()
         }
 
-        //TODO: Also compare to other codes in the database
+        // TODO Also compare to other codes in the database
 
         await updateDoc(userRef, {
           code: newCode
         })
 
         this.user.code = newCode
-        alert.show(`User code for ${this.user.name} reset successfully!`)
+        alert.success(
+          `Poslanecký kód pre "${this.user.name}" bol úspešne odstránený!`
+        )
       } catch (error) {
-        alert.show(`Failed to reset user code for ${this.user.name}`)
+        alert.error(`Nepodarilo sa resetovať kód pre "${this.user.name}"`)
         console.log(error)
       }
     },
@@ -214,7 +217,11 @@ export default {
     async deleteUserAndRemoveAuth() {
       try {
         // Delete user doc from the users collection
-        if (!confirm(`Are you sure you want to delete ${this.user.name}?`)) {
+        if (
+          !confirm(
+            `Ste si istí, že chcete odstrániť používateľa "${this.user.name}"?`
+          )
+        ) {
           return
         }
         const userRef = doc(db, 'users', this.user.id)
@@ -228,9 +235,9 @@ export default {
         //   console.log(error)
         //   alert('Failed to delete user from auth', error)
         // }
-        alert.show(`User ${this.user.name} deleted successfully!`)
+        alert.success(`Používateľ "${this.user.name}" úspešne odstránený!`)
       } catch (error) {
-        alert.show(`Failed to delete ${this.user.name}`)
+        alert.error(`Nepodarilo sa odstrániť používateľa "${this.user.name}"`)
         console.log(error)
       }
     },
@@ -246,9 +253,9 @@ export default {
           committee: this.user.committee
         })
         this.isEditing = false
-        alert.show(`User edits for ${this.user.name} saved successfully!`)
+        alert.success(`Zmeny pre "${this.user.name}" sa úspešne uložili!`)
       } catch (error) {
-        alert.show(`Failed to save user edits for ${this.user.name}`)
+        alert.error(`Nepodarilo sa uložiť zmeny pre "${this.user.name}"`)
         console.log(error)
       }
     }
