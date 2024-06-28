@@ -74,6 +74,7 @@ import { mdiLoading } from '@mdi/js'
     <!-- LIST OF USERS -->
     <ul v-if="!isLoading" class="overflow-x-scroll max-h-[25rem] text-gray-700">
       <UserListEntry
+        @deleted-user="refreshTable()"
         v-for="(userObject, index) in filteredUsers"
         :key="index"
         :user="userObject"
@@ -93,6 +94,7 @@ import SvgIcon from '@jamescoyle/vue-icon'
 import UserListEntry from '@/components/adminDashboard/UserListEntry.vue'
 import { getFirestore } from 'firebase/firestore'
 import { collection, query, where, getDocs } from 'firebase/firestore'
+
 const db = getFirestore()
 
 export default {
@@ -103,17 +105,7 @@ export default {
     }
   },
   async mounted() {
-    // fetch users from the firestore database
-    const q = query(collection(db, 'users'), where('code', '!=', 1234))
-    const querySnapshot = await getDocs(q)
-    setTimeout(() => {
-      querySnapshot.forEach((doc) => {
-        let newUser = doc.data()
-        newUser.id = doc.id
-        this.users.push(newUser)
-        this.users.sort((a, b) => a.name.localeCompare(b.name))
-      })
-    }, 500)
+    this.fetchUsersFromFirestore()
   },
   computed: {
     filteredUsers() {
@@ -128,8 +120,26 @@ export default {
     }
   },
   methods: {
+    async fetchUsersFromFirestore() {
+      const q = query(collection(db, 'users'), where('code', '!=', 1234))
+      const querySnapshot = await getDocs(q)
+      setTimeout(() => {
+        querySnapshot.forEach((doc) => {
+          let newUser = doc.data()
+          newUser.id = doc.id
+          this.users.push(newUser)
+          this.users.sort((a, b) => a.name.localeCompare(b.name))
+        })
+      }, 500)
+    },
+
     removeDiacritics(str) {
       return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    },
+
+    async refreshTable() {
+      this.users = []
+      this.fetchUsersFromFirestore()
     }
   },
 

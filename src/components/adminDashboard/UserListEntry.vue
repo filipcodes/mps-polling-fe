@@ -70,7 +70,7 @@ import { tags } from '@/states/tags'
       {{ user.party }}
     </span>
 
-    <!-- COMMITTEE -->
+    <!--! COMMITTEE -->
     <div class="">
       <span
         v-if="user.committee"
@@ -82,7 +82,8 @@ import { tags } from '@/states/tags'
         {{ user.committee }}
       </span>
     </div>
-    <!-- CODE -->
+
+    <!--! CODE -->
     <span class="w-fit block font-medium tracking-wider">
       <div
         title="Skopírovať do schránky"
@@ -99,16 +100,17 @@ import { tags } from '@/states/tags'
       </div>
     </span>
 
-    <!-- ACTIONS -->
+    <!--! ACTIONS -->
     <UserListEntryActions
       v-if="!isEditing"
       class="text-transparent fill-transparent group-hover/user:text-gray-700 group-hover:fill-gray-700 transition-all duration-200"
       @send-code-to-email="sendCodeToEmail(user.email, user.code)"
       @reset-code="resetUserCode()"
       @edit-user="isEditing = true"
+      @delete-user="deleteUserAndRemoveAuth()"
     ></UserListEntryActions>
 
-    <!-- EDITING ACTIONS - SAVE -->
+    <!--! EDITING ACTIONS - SAVE -->
     <div class="flex justify-center items-center" v-else>
       <button
         @click="saveEdit()"
@@ -130,8 +132,9 @@ import { tags } from '@/states/tags'
 import emailjs from '@emailjs/browser'
 import SvgIcon from '@jamescoyle/vue-icon'
 import UserListEntryActions from '@/components/adminDashboard/UserListEntryActions.vue'
-import { doc, updateDoc } from 'firebase/firestore'
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore'
 import { getFirestore } from 'firebase/firestore'
+import { getAuth, deleteUser } from 'firebase/auth'
 const db = getFirestore()
 
 export default {
@@ -203,6 +206,31 @@ export default {
         alert('Failed to reset code', error)
       }
     },
+
+    async deleteUserAndRemoveAuth() {
+      try {
+        // Delete user doc from the users collection
+        if (!confirm(`Are you sure you want to delete ${this.user.name}?`)) {
+          return
+        }
+        const userRef = doc(db, 'users', this.user.id)
+        await deleteDoc(userRef)
+        this.$emit('deleted-user')
+
+        // Delete user from the Firebase auth
+        try {
+          // Admin SDK needed for this to work
+        } catch (error) {
+          console.log(error)
+          alert('Failed to delete user from auth', error)
+        }
+        alert('User deleted successfully!')
+      } catch (error) {
+        console.log(error)
+        alert('Failed to delete user', error)
+      }
+    },
+
     async saveEdit() {
       // Edit user logic here
       try {
