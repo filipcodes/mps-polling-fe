@@ -136,7 +136,7 @@ export default {
         setTimeout(() => {
           if (this.users.length === 0) {
             this.errorLoadingUsers = true
-            alert.error('Error fetching users from Firestore')
+            alert.error('Vo Firebase sa nepodarilo nájsť používateľov')
             console.error(
               'Firebase fetch request has not resolved with any users in 5000ms, hence no users found'
             )

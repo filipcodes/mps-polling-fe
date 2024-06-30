@@ -5,7 +5,6 @@ import { mdiStarFourPoints } from '@mdi/js'
 import { mdiContentSave } from '@mdi/js'
 // This has to be imported before the Firebase call, so that the tags are available in correct color
 import { tags } from '@/states/tags'
-console.log(tags.parties.Pravicová)
 import { alert } from '@/states/bottomAlert.js'
 </script>
 <template>
@@ -52,7 +51,7 @@ import { alert } from '@/states/bottomAlert.js'
       </div>
     </div>
 
-    <!-- EMAIL -->
+    <!--! EMAIL -->
 
     <input
       v-if="isEditing"
@@ -65,17 +64,30 @@ import { alert } from '@/states/bottomAlert.js'
       </a>
     </span>
 
-    <!-- PARTY -->
-    <span
-      :class="['w-fit block px-1 rounded-sm', tags.parties[user.party]?.tag]"
-    >
-      {{ user.party }}
-    </span>
+    <!--! PARTY -->
+    <div class="">
+      <span
+        v-if="user.party && !isEditing"
+        :class="['w-fit block px-1 rounded-sm', tags.parties[user.party]?.tag]"
+      >
+        {{ user.party }}
+      </span>
+      <div v-if="isEditing" class="">
+        <select
+          v-model="user.party"
+          class="p-1 rounded-sm border bg-white text-zinc-600 border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+        >
+          <option v-for="party in Object.keys(tags.parties)" :value="party">
+            {{ party }}
+          </option>
+        </select>
+      </div>
+    </div>
 
     <!--! COMMITTEE -->
     <div class="">
       <span
-        v-if="user.committee"
+        v-if="user.committee && !isEditing"
         :class="[
           'w-fit block px-1 rounded-sm border-2',
           tags.committees[user.committee]
@@ -83,6 +95,19 @@ import { alert } from '@/states/bottomAlert.js'
       >
         {{ user.committee }}
       </span>
+      <div class="" v-if="isEditing">
+        <select
+          v-model="user.committee"
+          class="p-1 rounded-sm border bg-white text-zinc-600 border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+        >
+          <option
+            v-for="committee in Object.keys(tags.committees)"
+            :value="committee"
+          >
+            {{ committee }}
+          </option>
+        </select>
+      </div>
     </div>
 
     <!--! CODE -->
@@ -137,6 +162,7 @@ import UserListEntryActions from '@/components/adminDashboard/UserListEntryActio
 import { doc, updateDoc, deleteDoc } from 'firebase/firestore'
 import { getFirestore } from 'firebase/firestore'
 import { getAuth, deleteUser } from 'firebase/auth'
+
 const db = getFirestore()
 
 export default {
@@ -152,8 +178,17 @@ export default {
       required: true
     }
   },
-  components: {
-    SvgIcon
+  computed: {
+    partyOptions() {
+      let options = []
+      for (const party in tags.parties) {
+        options.push({
+          label: party,
+          value: party
+        })
+      }
+      return options
+    }
   },
 
   methods: {
@@ -263,7 +298,8 @@ export default {
     }
   },
   components: {
-    UserListEntryActions
+    UserListEntryActions,
+    SvgIcon
   }
 }
 </script>
