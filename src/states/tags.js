@@ -5,15 +5,18 @@ export const tags = reactive({
   parties: {
     Pravicová: {
       tag: 'bg-indigo-400',
-      color: 'indigo-400'
+      color: 'indigo-400',
+      text: 'text-indigo-400'
     },
     SocDem: {
       tag: 'bg-red-400',
-      color: 'red-400'
+      color: 'red-400',
+      text: 'text-red-400'
     },
     Kresťanská: {
       tag: 'bg-green-300',
-      color: 'green-300'
+      color: 'green-300',
+      text: 'text-green-300'
     },
     Liberálna: {
       tag: 'bg-sky-300',

@@ -5,6 +5,7 @@ import { mdiStarFourPoints } from '@mdi/js'
 import { mdiContentSave } from '@mdi/js'
 // This has to be imported before the Firebase call, so that the tags are available in correct color
 import { tags } from '@/states/tags'
+console.log(tags.parties.Pravicová)
 import { alert } from '@/states/bottomAlert.js'
 </script>
 <template>
@@ -31,7 +32,7 @@ import { alert } from '@/states/bottomAlert.js'
             type="mdi"
             size="20"
             :path="mdiStarFourPointsCircle"
-            :class="`text-${tags.parties[user.party]?.color} `"
+            :class="tags.parties[user.party]?.text"
           ></svg-icon>
         </span>
 
@@ -45,7 +46,7 @@ import { alert } from '@/states/bottomAlert.js'
             type="mdi"
             size="16"
             :path="mdiStarFourPoints"
-            :class="`text-${tags.parties[user.party]?.color}`"
+            :class="tags.parties[user.party]?.text"
           ></svg-icon>
         </span>
       </div>
@@ -154,6 +155,7 @@ export default {
   components: {
     SvgIcon
   },
+
   methods: {
     async copyToClipboard(code) {
       try {
@@ -206,7 +208,7 @@ export default {
 
         this.user.code = newCode
         alert.success(
-          `Poslanecký kód pre "${this.user.name}" bol úspešne odstránený!`
+          `Poslanecký kód pre "${this.user.name}" bol úspešne resetovaný!`
         )
       } catch (error) {
         alert.error(`Nepodarilo sa resetovať kód pre "${this.user.name}"`)

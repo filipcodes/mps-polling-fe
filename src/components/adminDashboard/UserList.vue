@@ -1,6 +1,7 @@
 <script setup>
 import { mdiMagnify } from '@mdi/js'
 import { mdiLoading } from '@mdi/js'
+import { alert } from '@/states/bottomAlert.js'
 </script>
 <template>
   <div
@@ -81,6 +82,8 @@ import { mdiLoading } from '@mdi/js'
         >{{ index }}</UserListEntry
       >
     </ul>
+
+    <!-- MASS ACTIONS -->
     <footer class="bg-gray-700 px-4 h-full py-1 border-t flex justify-end">
       <span class="text-gray-100 roboto text-sm font-medium tracking-wide">
         Hromadné akcie:
@@ -101,7 +104,8 @@ export default {
   data() {
     return {
       searchTerm: '',
-      users: []
+      users: [],
+      errorLoadingUsers: false
     }
   },
   async mounted() {
@@ -116,21 +120,42 @@ export default {
       )
     },
     isLoading() {
-      return this.users.length === 0 && this.searchTerm === ''
+      return (
+        this.users.length === 0 &&
+        this.searchTerm === '' &&
+        this.errorLoadingUsers === false
+      )
     }
   },
   methods: {
     async fetchUsersFromFirestore() {
-      const q = query(collection(db, 'users'), where('code', '!=', 1234))
-      const querySnapshot = await getDocs(q)
-      setTimeout(() => {
-        querySnapshot.forEach((doc) => {
-          let newUser = doc.data()
-          newUser.id = doc.id
-          this.users.push(newUser)
-          this.users.sort((a, b) => a.name.localeCompare(b.name))
-        })
-      }, 500)
+      try {
+        const q = query(collection(db, 'users'))
+        const querySnapshot = await getDocs(q)
+
+        setTimeout(() => {
+          if (this.users.length === 0) {
+            this.errorLoadingUsers = true
+            alert.error('Error fetching users from Firestore')
+            console.error(
+              'Firebase fetch request has not resolved with any users in 5000ms, hence no users found'
+            )
+          }
+        }, 5000)
+
+        setTimeout(() => {
+          querySnapshot.forEach((doc) => {
+            let newUser = doc.data()
+            newUser.id = doc.id
+            this.users.push(newUser)
+            this.users.sort((a, b) => a.name.localeCompare(b.name))
+          })
+        }, 500)
+      } catch (error) {
+        this.errorLoadingUsers = true
+        alert.error('Error fetching users from Firestore')
+        console.error(error)
+      }
     },
 
     removeDiacritics(str) {
@@ -142,7 +167,6 @@ export default {
       this.fetchUsersFromFirestore()
     }
   },
-
   components: {
     SvgIcon,
     UserListEntry
