@@ -138,7 +138,7 @@ import { alert } from '@/states/bottomAlert.js'
     ></UserListEntryActions>
 
     <!--! EDITING ACTIONS - SAVE -->
-    <div class="flex justify-center items-center" v-else>
+    <div class="flex justify-center items-center border-l" v-else>
       <button
         @click="saveEdit()"
         class="hover:bg-gray-300 mx-2 items-center rounded-sm p-1 group transition-all duration-200 flex justify-center gap-2 hover:cursor-pointer"
@@ -172,12 +172,14 @@ export default {
       isEditing: false
     }
   },
+
   props: {
     user: {
       type: Object,
       required: true
     }
   },
+
   computed: {
     partyOptions() {
       let options = []
@@ -296,6 +298,7 @@ export default {
       }
     }
   },
+
   components: {
     UserListEntryActions,
     SvgIcon

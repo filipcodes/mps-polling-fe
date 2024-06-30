@@ -9,7 +9,11 @@ import { alert } from '@/states/bottomAlert.js'
       Hromadné akcie:
     </span>
     <ul class="flex gap-1">
-      <li v-for="(bulkAction, index) in bulkActions" :key="index">
+      <li
+        v-for="(bulkAction, index) in bulkActions"
+        :key="index"
+        class="border-r pr-1 border-gray-500"
+      >
         <button
           @click="bulkAction.function"
           class="hover:bg-gray-600 hover:text-gray-300 text-gray-400 rounded-sm px-2 transition-all duration-200 hover:cursor-pointer"
