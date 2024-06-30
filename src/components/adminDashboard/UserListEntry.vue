@@ -203,7 +203,6 @@ export default {
     },
 
     async sendCodeToEmail(email, code) {
-      console.log(code, email)
       try {
         await emailjs.send(
           'service_5c5rd2h',
@@ -218,7 +217,7 @@ export default {
         alert.success(`Email bol úspešne odoslaný na "${email}"`)
       } catch (error) {
         alert.error(`Na adresu "${email}" sa nepodarilo odoslať email!`)
-        console.log(error)
+        console.error(error)
       }
     },
 

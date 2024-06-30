@@ -83,12 +83,8 @@ import { alert } from '@/states/bottomAlert.js'
       >
     </ul>
 
-    <!-- MASS ACTIONS -->
-    <footer class="bg-gray-700 px-4 h-full py-1 border-t flex justify-end">
-      <span class="text-gray-100 roboto text-sm font-medium tracking-wide">
-        Hromadné akcie:
-      </span>
-    </footer>
+    <!--! BULK ACTIONS -->
+    <UserListBulkActions :users="users"></UserListBulkActions>
   </div>
 </template>
 
@@ -97,6 +93,7 @@ import SvgIcon from '@jamescoyle/vue-icon'
 import UserListEntry from '@/components/adminDashboard/UserListEntry.vue'
 import { getFirestore } from 'firebase/firestore'
 import { collection, query, where, getDocs } from 'firebase/firestore'
+import UserListBulkActions from '@/components/adminDashboard/UserListBulkActions.vue'
 
 const db = getFirestore()
 
@@ -109,7 +106,19 @@ export default {
     }
   },
   async mounted() {
-    this.fetchUsersFromFirestore()
+    // this.fetchUsersFromFirestore()
+    this.users = [
+      {
+        name: 'Janko Hraško',
+        email: 'janko@hrasko.com',
+        code: '123456'
+      },
+      {
+        name: 'Filip Sipos',
+        email: 'filip.sipos@student.leaf.academy',
+        code: '654321'
+      }
+    ]
   },
   computed: {
     filteredUsers() {
