@@ -1,10 +1,12 @@
 <script setup>
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiAccount } from '@mdi/js'
+import BottomAlert from '@/components/BottomAlert.vue'
 </script>
 
 <template>
   <router-view />
+  <BottomAlert></BottomAlert>
 </template>
 
 <style>

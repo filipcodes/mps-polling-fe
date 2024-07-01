@@ -12,7 +12,7 @@ import {
 } from 'firebase/firestore'
 </script>
 <template>
-  <div class="p-5 roboto">
+  <div class="roboto max-h-screen">
     <h1 class="text-4xl font-bold roboto">Správca Hlasovania</h1>
     <p>Sekcia na spravovanie hlasovaní</p>
     <div class="flex flex-row gap-12">
