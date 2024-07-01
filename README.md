@@ -17,13 +17,23 @@ The MPS provides an immersive, hands-on experience where students can engage in 
 ### Key Implemented Features (✅) and main TODOs (🔲)
 
 ✅ Login system for attendees based on parliamentary codes
+
 ✅ Integrated interface for attendee voting
+
 ✅ Admin interface for creation of polls
-✅ Admin interface for management of users in the Firebase database
-✅ Admin functionalities like sending emails, reseting passwords etc.
+
+✅ Admin interface for management of users in the Firebase
+database
+
+✅ Admin functionalities like sending emails, reseting
+passwords etc.
+
 🔲 Interface for evaluation of users
+
 🔲 Separate interface for overlooking committees
+
 🔲 Proper security measures
+
 🔲 Admin SDK Node.js server for handling admin requests
 
 ### Usage
