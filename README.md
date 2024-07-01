@@ -22,11 +22,9 @@ The MPS provides an immersive, hands-on experience where students can engage in 
 
 ✅ Admin interface for creation of polls
 
-✅ Admin interface for management of users in the Firebase
-database
+✅ Admin interface for management of users in the Firebase database
 
-✅ Admin functionalities like sending emails, reseting
-passwords etc.
+✅ Admin functionalities like sending emails, reseting passwords etc.
 
 🔲 Interface for evaluation of users
 
