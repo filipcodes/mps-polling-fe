@@ -53,7 +53,7 @@ In case you would like to contribute to the project, following are some basic se
 
 ### Project setup
 
-#### Dev
+#### Development Environment
 
 1. Install dependencies:
 
