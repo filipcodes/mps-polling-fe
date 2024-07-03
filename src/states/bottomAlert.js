@@ -14,21 +14,13 @@ export const alert = reactive({
   },
 
   success(text) {
-    this.text = text
     this.type = 'success'
-    this.isVisible = true
-    setTimeout(() => {
-      this.isVisible = false
-    }, 4000)
+    this.show(text)
   },
 
   error(text) {
-    this.text = text
     this.type = 'error'
-    this.isVisible = true
-    setTimeout(() => {
-      this.isVisible = false
-    }, 4000)
+    this.show(text)
   },
 
   close() {

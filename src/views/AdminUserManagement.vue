@@ -11,9 +11,6 @@
 import UserList from '@/components/adminDashboard/UserList.vue'
 import ViewHeader from '@/components/adminDashboard/ViewHeader.vue'
 export default {
-  setup() {
-    return {}
-  },
   components: {
     ViewHeader,
     UserList

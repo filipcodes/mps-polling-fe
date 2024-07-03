@@ -45,7 +45,7 @@ import { alert } from '@/states/bottomAlert.js'
       </div>
     </header>
 
-    <!-- LIST OF USERS -->
+    <!--! TABLE OF USERS -->
 
     <!-- NO USERS FOUND -->
     <div
@@ -72,7 +72,7 @@ import { alert } from '@/states/bottomAlert.js'
       />
     </div>
 
-    <!-- LIST OF USERS -->
+    <!-- LIST OF USERS IN CASE IT IS FOUND-->
     <ul v-if="!isLoading" class="overflow-x-scroll max-h-[25rem] text-gray-700">
       <UserListEntry
         @deleted-user="refreshTable()"
@@ -105,6 +105,7 @@ export default {
       errorLoadingUsers: false
     }
   },
+
   async mounted() {
     // this.fetchUsersFromFirestore()
     this.users = [
@@ -120,6 +121,7 @@ export default {
       }
     ]
   },
+
   computed: {
     filteredUsers() {
       return this.users.filter((user) =>
@@ -128,6 +130,7 @@ export default {
         )
       )
     },
+
     isLoading() {
       return (
         this.users.length === 0 &&
@@ -136,6 +139,7 @@ export default {
       )
     }
   },
+
   methods: {
     async fetchUsersFromFirestore() {
       try {
@@ -176,6 +180,7 @@ export default {
       this.fetchUsersFromFirestore()
     }
   },
+
   components: {
     SvgIcon,
     UserListEntry
