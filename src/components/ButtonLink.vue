@@ -35,7 +35,8 @@ export default {
           'tertiary',
           'underlined',
           'inactive',
-          'pollOption'
+          'pollOption',
+          'alertClose'
         ].includes(value)
     }
   },
@@ -60,6 +61,9 @@ export default {
           break
         case 'pollOption':
           return 'text-blue-500 bevan bg-blue-200 px-2  py-2 fill-blue-400 hover:bg-blue-300'
+          break
+        case 'alertClose':
+          return 'text-gray-700 text-md font-bold bevan  bg-[#DEDEDE7F] px-4 py-2 hover:bg-gray-100 active:bg-gray-200'
           break
       }
     },

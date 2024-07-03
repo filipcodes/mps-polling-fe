@@ -1,9 +1,9 @@
 <template>
-  <div class="flex gap-4 min-h-screen roboto">
+  <div class="flex min-h-screen roboto">
     <aside>
       <Sidebar></Sidebar>
     </aside>
-    <main>
+    <main class="p-4 pb-12 w-full">
       <router-view></router-view>
     </main>
   </div>

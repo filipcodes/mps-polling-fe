@@ -3,9 +3,9 @@ import SignOutButton from '@/components/atendeeDashboard/SignOutButton.vue'
 </script>
 <template>
   <div
-    class="min-w-64 max-w-80 p-2 pt-0 bg-red-600 text-white h-full roboto flex flex-col justify-between"
+    class="min-w-64 max-w-80 p-2 pt-0 bg-red-700 text-white h-full roboto flex flex-col justify-between"
   >
-    <div class="flex items-center gap-4 p-4 border-b-[1.5px] border-red-700">
+    <div class="flex items-center gap-4 p-4 border-b-[1.5px] border-red-800">
       <div
         alt="admin logo"
         class="w-12 h-12 rounded-full bg-white p-2 flex items-center justify-center"
@@ -43,9 +43,9 @@ import SignOutButton from '@/components/atendeeDashboard/SignOutButton.vue'
             <router-link
               :to="link.route"
               :class="[
-                'flex items-center gap-4 hover:bg-red-700 hover:text-red-50  transition-all duration-200 p-2 rounded-md',
+                'flex items-center gap-4 hover:bg-red-800 hover:text-red-50  transition-all duration-200 p-2 rounded-md',
                 activeRoute === link.route
-                  ? 'bg-red-800 text-white'
+                  ? 'bg-red-900 text-white'
                   : 'text-red-200 '
               ]"
             >
@@ -67,6 +67,7 @@ import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiVote } from '@mdi/js'
 import { mdiAccountMultiple } from '@mdi/js'
 import { mdiHistory } from '@mdi/js'
+import { mdiCog } from '@mdi/js'
 
 export default {
   name: 'Sidebar',
@@ -93,6 +94,11 @@ export default {
           name: 'História',
           icon: mdiHistory,
           route: '/admin/history'
+        },
+        {
+          name: 'Nastavenia',
+          icon: mdiCog,
+          route: '/admin/settings'
         }
       ]
     }
