@@ -14,15 +14,15 @@ import { alert } from '@/states/bottomAlert.js'
       <p class="roboto">
         {{ alert.text }}
       </p>
-      <ButtonLink type="alertClose" class="text-md" @click="alert.close()">
+      <AppButtonLink type="alertClose" class="text-md" @click="alert.close()">
         Zavrieť
-      </ButtonLink>
+      </AppButtonLink>
     </div>
   </transition>
 </template>
 
 <script>
-import ButtonLink from '@/components/ButtonLink.vue'
+import AppButtonLink from '@/components/AppButtonLink.vue'
 
 export default {
   name: 'BottomAlert',
@@ -37,8 +37,8 @@ export default {
       }
     }
   },
-  children: {
-    ButtonLink
+  components: {
+    AppButtonLink
   }
 }
 </script>

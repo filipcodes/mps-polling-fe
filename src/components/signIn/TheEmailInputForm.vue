@@ -24,15 +24,15 @@ import { signIn } from '@/states/signInStates'
         />
       </div>
 
-      <ButtonLink class="w-full" @click="validateEmailandNavigate()"
-        >Pokračovať</ButtonLink
+      <AppButtonLink class="w-full" @click="validateEmailandNavigate()"
+        >Pokračovať</AppButtonLink
       >
     </form>
   </div>
 </template>
 
 <script>
-import ButtonLink from '@/components/ButtonLink.vue'
+import AppButtonLink from '@/components/AppButtonLink.vue'
 export default {
   data() {
     return {
@@ -57,7 +57,7 @@ export default {
       }, 300)
     }
   },
-  components: [ButtonLink]
+  components: [AppButtonLink]
 }
 </script>
 

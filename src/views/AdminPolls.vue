@@ -1,5 +1,5 @@
 <script setup>
-import ButtonLink from '@/components/ButtonLink.vue'
+import AllButtonLink from '@/components/AllButtonLink.vue'
 import {
   getFirestore,
   collection,
@@ -58,11 +58,11 @@ import {
             class="flex justify-between w-full items-center bg-white text-gray-500 py-2 pl-3 pr-2 rounded-md border-gray-300 shadow-sm border text-lg tracking-wider font-medium"
           >
             {{ option }}
-            <ButtonLink
+            <AllButtonLink
               is="button"
               type="secondary"
               @click="handleRemoveOption(option)"
-              >-</ButtonLink
+              >-</AllButtonLink
             >
           </li>
           <li class="pr-2 w-full">
@@ -73,11 +73,11 @@ import {
                 v-model="newPollOption"
                 placeholder="Nová možnosť"
               />
-              <ButtonLink class="" @click="handleAddOption">+</ButtonLink>
+              <AllButtonLink class="" @click="handleAddOption">+</AllButtonLink>
             </form>
           </li>
         </ul>
-        <ButtonLink submit class="w-full">Vytvoriť hlasovanie</ButtonLink>
+        <AllButtonLink submit class="w-full">Vytvoriť hlasovanie</AllButtonLink>
       </form>
 
       <ul v-if="activePolls && activePolls[0]" class="min-w-56">
@@ -115,8 +115,8 @@ import {
             </div>
           </div>
 
-          <ButtonLink @click="handleCloseVote" class="w-full mt-4"
-            >Ukončiť hlasovanie</ButtonLink
+          <AllButtonLink @click="handleCloseVote" class="w-full mt-4"
+            >Ukončiť hlasovanie</AllButtonLink
           >
         </li>
       </ul>

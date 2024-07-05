@@ -31,16 +31,16 @@ import { signIn } from '@/states/signInStates'
     </div>
     <SignInButton id="signInBtn"></SignInButton>
     <div class="flex justify-center">
-      <ButtonLink type="underlined" @click="signIn.signInStep = 0">
+      <AppButtonLink type="underlined" @click="signIn.signInStep = 0">
         Spať ku emailu
-      </ButtonLink>
+      </AppButtonLink>
     </div>
   </div>
 </template>
 
 <script>
 import SignInButton from '@/components/signIn/SignInButton.vue'
-import ButtonLink from '@/components/ButtonLink.vue'
+import AppButtonLink from '@/components/AppButtonLink.vue'
 
 export default {
   data() {

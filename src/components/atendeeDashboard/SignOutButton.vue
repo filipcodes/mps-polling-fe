@@ -1,9 +1,11 @@
 <script setup>
-import ButtonLink from '@/components/ButtonLink.vue'
+import AppButtonLink from '@/components/AppButtonLink.vue'
 </script>
 
 <template>
-  <ButtonLink type="tertiary" @click="handleSignOut">Odhlásiť sa</ButtonLink>
+  <AppButtonLink type="tertiary" @click="handleSignOut"
+    >Odhlásiť sa</AppButtonLink
+  >
 </template>
 
 <script>
@@ -24,7 +26,7 @@ export default {
         })
     }
   },
-  components: [ButtonLink]
+  components: [AppButtonLink]
 }
 </script>
 

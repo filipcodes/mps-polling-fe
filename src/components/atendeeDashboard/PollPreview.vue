@@ -1,5 +1,5 @@
 <script setup>
-import ButtonLink from '@/components/ButtonLink.vue'
+import AppButtonLink from '@/components/AppButtonLink.vue'
 import { get } from 'firebase/database'
 import { user } from '@/states/userState.js'
 
@@ -30,7 +30,7 @@ import Cookies from 'js-cookie'
       >
         hlasovanie {{ poll.number }}: <span>{{ poll.name }}</span>
       </h3>
-      <ButtonLink
+      <AppButtonLink
         :type="selected && isActive ? 'primary' : 'inactive'"
         class="w-full sm:w-fit"
         @click="handleVote"
@@ -49,10 +49,10 @@ import Cookies from 'js-cookie'
             />
           </svg>
         </div>
-      </ButtonLink>
+      </AppButtonLink>
     </div>
     <div class="grid sm:grid-cols-3 grid-cols-2 sm:gap-4 gap-2 w-full">
-      <ButtonLink
+      <AppButtonLink
         v-for="option in poll.options"
         :type="isActive ? 'pollOption' : 'inactive'"
         @click="selected = option"
@@ -60,7 +60,7 @@ import Cookies from 'js-cookie'
           selected === option ? 'outline-2 outline-blue-700 shadow-blue' : '',
           'last:col-span-2 last:sm:col-span-1'
         ]"
-        >{{ option }}</ButtonLink
+        >{{ option }}</AppButtonLink
       >
     </div>
   </li>
@@ -121,7 +121,7 @@ export default {
   unmounted() {
     Cookies.remove('IsActive')
   },
-  components: [ButtonLink]
+  components: [AppButtonLink]
 }
 </script>
 

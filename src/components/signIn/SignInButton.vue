@@ -2,7 +2,7 @@
 import { signIn } from '@/states/signInStates'
 </script>
 <template>
-  <ButtonLink
+  <AppButtonLink
     class="mb-2 w-full flex items-center justify-center"
     @click="handleSignIn"
   >
@@ -21,11 +21,11 @@ import { signIn } from '@/states/signInStates'
       </svg>
       <span class="bevan text-lg" v-else="isVerifyingUser">Prihlásiť sa</span>
     </transition-group>
-  </ButtonLink>
+  </AppButtonLink>
 </template>
 
 <script>
-import ButtonLink from '@/components/ButtonLink.vue'
+import AppButtonLink from '@/components/AppButtonLink.vue'
 
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 
