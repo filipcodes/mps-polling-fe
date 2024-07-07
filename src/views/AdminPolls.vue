@@ -16,7 +16,7 @@ import {
 <template>
   <div class="roboto max-h-screen">
     <ViewHeader>Správa Hlasovania</ViewHeader>
-    <div class="flex flex-row gap-12">
+    <div class="flex flex-row gap-12 justify-center">
       <form
         @submit.prevent="handleCreatePoll"
         @keydown.enter.prevent="console.log('enter')"
@@ -80,8 +80,13 @@ import {
         </ul>
         <AppButtonLink submit class="w-full">Vytvoriť hlasovanie</AppButtonLink>
       </form>
+      <PollTracking
+        v-for="(activePoll, index) in activePolls"
+        :key="activePoll.name"
+        :activePoll="activePoll"
+      ></PollTracking>
 
-      <ul v-if="activePolls && activePolls[0]" class="min-w-56">
+      <!-- <ul v-if="activePolls && activePolls[0]" class="min-w-56">
         <li
           class="bg-white shadow-md rounded-md px-8 py-4 flex flex-col justify-between items-center border border-gray-200"
           v-for="(poll, index) in activePolls"
@@ -120,13 +125,14 @@ import {
             >Ukončiť hlasovanie</AppButtonLink
           >
         </li>
-      </ul>
+      </ul> -->
     </div>
   </div>
 </template>
 
 <script>
 import ViewHeader from '@/components/adminDashboard/ViewHeader.vue'
+import PollTracking from '@/components/adminDashboard/PollTracking.vue'
 
 const db = getFirestore()
 let colRef = collection(db, 'polls')
@@ -146,9 +152,7 @@ export default {
     }
   },
   mounted() {
-    console.log('mounter')
     const q = query(colRef, where('isActive', '==', true))
-    console.log('mounter')
 
     let polls = []
     // display activePolls on change in whatever
@@ -208,9 +212,10 @@ export default {
   },
   methods: {
     async handleCreatePoll() {
-      console.log('creating poll')
+      // poll document ID
       const randNum = Math.floor(1000000000 + Math.random() * 9000000000)
 
+      // create a document for the poll
       let docRef = doc(collection(db, 'polls'), randNum.toString())
       const newDocRef = await setDoc(docRef, {
         name: this.pollName,
@@ -220,13 +225,6 @@ export default {
         id: randNum.toString(),
         votes: []
       })
-
-      // const uhoh = doc(db, 'polls', newDocRef.id)
-      // await updateDoc(uhoh, {
-      //   id: newDocRef.id
-      // })
-
-      console.log()
     },
 
     // Option Manipulation
@@ -235,7 +233,6 @@ export default {
       this.newPollOption = ''
     },
     handleRemoveOption(option) {
-      console.log('removing option', option)
       this.pollOptions = this.pollOptions.filter((opt) => opt !== option)
     },
     isNumber(evt) {
@@ -246,10 +243,8 @@ export default {
       }
     },
     async handleCloseVote() {
-      console.log('closing vote')
-
       const pollDocRef = doc(collection(db, 'polls'), this.activePolls[0].id)
-      // what happens here?
+
       await updateDoc(pollDocRef, {
         isActive: false
       })
@@ -258,6 +253,10 @@ export default {
         location.reload()
       }, 1000)
     }
+  },
+  components: {
+    PollTracking,
+    AppButtonLink
   }
 }
 </script>
