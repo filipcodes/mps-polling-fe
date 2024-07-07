@@ -11,10 +11,10 @@ import {
   setDoc
 } from 'firebase/firestore'
 </script>
+
 <template>
   <div class="roboto max-h-screen">
-    <h1 class="text-4xl font-bold roboto">Správca Hlasovania</h1>
-    <p>Sekcia na spravovanie hlasovaní</p>
+    <ViewHeader>Správa Hlasovania</ViewHeader>
     <div class="flex flex-row gap-12">
       <form
         @submit.prevent="handleCreatePoll"
@@ -125,6 +125,8 @@ import {
 </template>
 
 <script>
+import ViewHeader from '@/components/adminDashboard/ViewHeader.vue'
+
 const db = getFirestore()
 let colRef = collection(db, 'polls')
 export default {

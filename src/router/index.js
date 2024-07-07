@@ -114,7 +114,10 @@ router.beforeEach(async (to, from, next) => {
     console.log('guard4')
 
     if (await getCurrentUser()) {
-      if (user.data.email === 'filipsipo@gmail.com') {
+      if (
+        user.data.email === 'filipsipo@gmail.com' ||
+        user.data.email === 'filip.sipos@student.leaf.academy'
+      ) {
         console.log('welcome, lord filip')
         next()
       } else {
