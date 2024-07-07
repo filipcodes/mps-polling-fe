@@ -1,6 +1,7 @@
 <script setup>
-import AllButtonLink from '@/components/AllButtonLink.vue'
+import AppButtonLink from '@/components/AppButtonLink.vue'
 </script>
+
 <template>
   <div
     :class="[
@@ -17,7 +18,7 @@ import AllButtonLink from '@/components/AllButtonLink.vue'
         Strnánka, ktorú ste hľadali žiaľ neexistuje.
       </h1>
       <div class="grid place-items-center">
-        <AllButtonLink
+        <AppButtonLink
           class="w-fit"
           @click="backToLogin"
           type="tertiary"
@@ -39,7 +40,7 @@ import AllButtonLink from '@/components/AllButtonLink.vue'
               ></path>
             </svg>
           </div>
-        </AllButtonLink>
+        </AppButtonLink>
       </div>
     </div>
   </div>
@@ -61,7 +62,7 @@ export default {
       }, 350)
     }
   },
-  components: [AllButtonLink]
+  components: [AppButtonLink]
 }
 </script>
 

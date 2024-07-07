@@ -1,5 +1,6 @@
 <script setup>
-import AllButtonLink from '@/components/AllButtonLink.vue'
+import AppButtonLink from '@/components/AppButtonLink.vue'
+
 import {
   getFirestore,
   collection,
@@ -11,10 +12,10 @@ import {
   setDoc
 } from 'firebase/firestore'
 </script>
+
 <template>
   <div class="roboto max-h-screen">
-    <h1 class="text-4xl font-bold roboto">Správca Hlasovania</h1>
-    <p>Sekcia na spravovanie hlasovaní</p>
+    <ViewHeader>Správa Hlasovania</ViewHeader>
     <div class="flex flex-row gap-12">
       <form
         @submit.prevent="handleCreatePoll"
@@ -58,11 +59,11 @@ import {
             class="flex justify-between w-full items-center bg-white text-gray-500 py-2 pl-3 pr-2 rounded-md border-gray-300 shadow-sm border text-lg tracking-wider font-medium"
           >
             {{ option }}
-            <AllButtonLink
+            <AppButtonLink
               is="button"
               type="secondary"
               @click="handleRemoveOption(option)"
-              >-</AllButtonLink
+              >-</AppButtonLink
             >
           </li>
           <li class="pr-2 w-full">
@@ -73,11 +74,11 @@ import {
                 v-model="newPollOption"
                 placeholder="Nová možnosť"
               />
-              <AllButtonLink class="" @click="handleAddOption">+</AllButtonLink>
+              <AppButtonLink class="" @click="handleAddOption">+</AppButtonLink>
             </form>
           </li>
         </ul>
-        <AllButtonLink submit class="w-full">Vytvoriť hlasovanie</AllButtonLink>
+        <AppButtonLink submit class="w-full">Vytvoriť hlasovanie</AppButtonLink>
       </form>
 
       <ul v-if="activePolls && activePolls[0]" class="min-w-56">
@@ -115,8 +116,8 @@ import {
             </div>
           </div>
 
-          <AllButtonLink @click="handleCloseVote" class="w-full mt-4"
-            >Ukončiť hlasovanie</AllButtonLink
+          <AppButtonLink @click="handleCloseVote" class="w-full mt-4"
+            >Ukončiť hlasovanie</AppButtonLink
           >
         </li>
       </ul>
@@ -125,6 +126,8 @@ import {
 </template>
 
 <script>
+import ViewHeader from '@/components/adminDashboard/ViewHeader.vue'
+
 const db = getFirestore()
 let colRef = collection(db, 'polls')
 export default {
