@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <section>Poll Create</section>
 </template>
 
 <script>
@@ -8,4 +8,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped></style>
