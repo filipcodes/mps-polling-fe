@@ -3,7 +3,7 @@
     <aside>
       <Sidebar></Sidebar>
     </aside>
-    <main class="p-4 pb-12 w-full">
+    <main class="p-4 w-full">
       <router-view></router-view>
     </main>
   </div>
