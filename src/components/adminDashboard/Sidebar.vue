@@ -3,7 +3,7 @@ import SignOutButton from '@/components/atendeeDashboard/SignOutButton.vue'
 </script>
 <template>
   <div
-    class="min-w-64 max-w-80 p-2 pt-0 bg-red-700 text-white h-full roboto flex flex-col justify-between"
+    class="min-w-64 h-full max-w-80 p-2 pt-0 bg-red-700 text-white roboto flex flex-col justify-between"
   >
     <div class="flex items-center gap-4 p-4 border-b-[1.5px] border-red-800">
       <div
