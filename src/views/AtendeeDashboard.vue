@@ -23,7 +23,7 @@ import { signIn } from '@/states/signInStates.js'
         <h2
           class="text-center mb-3 text-2xl roboto font-bold text-blue-600 tracking-wider bg-blue-100 rounded-full inline-block px-4 py-1"
         >
-          Aktívne Hlasovania
+          {{ $t('attendee.activePolls.title') }}
         </h2>
         <ul
           :class="[
@@ -35,7 +35,7 @@ import { signIn } from '@/states/signInStates.js'
             class="w-fit h-full font-bold tracking-wider text-xl text-gray-800"
             v-if="!activePolls[0]"
           >
-            Žiadne aktívne hlasovania
+            {{ $t('attendee.activePolls.noActivePolls') }}
           </p>
           <PollPreview
             v-if="activePolls[0]"
@@ -49,7 +49,9 @@ import { signIn } from '@/states/signInStates.js'
     <footer class="shadow-lg rounded-lg overflow-hidden border border-gray-200">
       <div class="flex justify-between items-center p-2 pl-4">
         <div class="">
-          <p class="text-gray-500 font-medium mb-[-3px]">Prihlásený ako:</p>
+          <p class="text-gray-500 font-medium mb-[-3px]">
+            {{ $t('attendee.loggedInAs') }}:
+          </p>
           <p
             class="font-bold text-lg text-gray-800 tracking-wider text-ellipsis max-w-48 overflow-hidden"
           >
