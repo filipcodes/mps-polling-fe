@@ -1,7 +1,7 @@
 import router from '../router'
 import { createI18n } from 'vue-i18n'
 
-const i18n = createI18n({
+export const i18n = createI18n({
   locale: 'sk',
   fallbackLocale: 'sk',
   messages: {
@@ -63,6 +63,8 @@ const i18n = createI18n({
         logOut: 'Log out'
       },
       attendee: {
+        welcomeMessage: 'Welcome to the voting system for MPS 2024',
+
         activePolls: {
           title: 'Current Polls',
           noActivePolls: 'No active polls',
