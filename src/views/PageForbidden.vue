@@ -1,5 +1,5 @@
 <script setup>
-import AllButtonLink from '@/components/AllButtonLink.vue'
+import AppButtonLink from '@/components/AppButtonLink.vue'
 </script>
 <template>
   <div class="grid place-items-center p-2 h-screen">
@@ -11,8 +11,8 @@ import AllButtonLink from '@/components/AllButtonLink.vue'
       <h1 class="text-gray-500 text-lg mb-4">
         Pre prístup na túto stránku sa musíte prihlásiť.
       </h1>
-      <AllButtonLink tag="RouterLink" type="tertiary" to="/signin"
-        >Prihlásenie</AllButtonLink
+      <AppButtonLink tag="RouterLink" type="tertiary" to="/signin"
+        >Prihlásenie</AppButtonLink
       >
     </div>
   </div>
@@ -21,6 +21,6 @@ import AllButtonLink from '@/components/AllButtonLink.vue'
 <script>
 export default {
   name: 'PageForbidden',
-  components: [AllButtonLink]
+  components: [AppButtonLink]
 }
 </script>

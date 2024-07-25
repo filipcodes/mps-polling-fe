@@ -35,13 +35,26 @@ import { alert } from '@/states/bottomAlert.js'
       </div>
 
       <!-- DESC ROW -->
+      <!-- TODO: SHOULD BE GENERATED FROM A LIST -->
       <div class="table-grid roboto text-sm">
-        <span class="roboto">Meno</span>
-        <span class="roboto">Email</span>
-        <span class="roboto">Strana</span>
-        <span class="roboto">Výbor</span>
-        <span class="roboto">Poslanecký Kód</span>
-        <span class="roboto text-center">Akcie</span>
+        <span class="roboto">
+          {{ $t('admin.userManagement.table.name') }}
+        </span>
+        <span class="roboto">
+          {{ $t('admin.userManagement.table.email') }}
+        </span>
+        <span class="roboto">
+          {{ $t('admin.userManagement.table.party') }}
+        </span>
+        <span class="roboto">
+          {{ $t('admin.userManagement.table.committee') }}
+        </span>
+        <span class="roboto">
+          {{ $t('admin.userManagement.table.code') }}
+        </span>
+        <span class="roboto text-center">
+          {{ $t('admin.userManagement.table.actions') }}
+        </span>
       </div>
     </header>
 
@@ -54,7 +67,7 @@ import { alert } from '@/states/bottomAlert.js'
     >
       <span>
         <p class="text-center text-lg roboto text-gray-500 py-4">
-          Nenašli sa žiadni účastníci.
+          {{ $t('admin.userManagement.table.noAttendeesFound') }}
         </p>
       </span>
     </div>

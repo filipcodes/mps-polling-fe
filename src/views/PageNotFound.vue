@@ -1,5 +1,5 @@
 <script setup>
-import AllButtonLink from '@/components/AllButtonLink.vue'
+import AppButtonLink from '@/components/AppButtonLink.vue'
 </script>
 <template>
   <div
@@ -10,21 +10,21 @@ import AllButtonLink from '@/components/AllButtonLink.vue'
   >
     <div class="text-center">
       <span
-        class="bevan mb-5 text-9xl tracking-wider text-red-600 bg-red-200 inline-block px-8 py-2 rounded-full"
+        class="bevan mb-6 text-9xl tracking-wider text-red-600 bg-red-200 inline-block px-8 py-2 rounded-full"
         >404</span
       >
-      <h1 class="text-gray-500 text-lg mb-4">
-        Strnánka, ktorú ste hľadali žiaľ neexistuje.
+      <h1 class="text-gray-400 text-md mb-10">
+        {{ $t('pageNotFound.title') }}
       </h1>
       <div class="grid place-items-center">
-        <AllButtonLink
+        <AppButtonLink
           class="w-fit"
           @click="backToLogin"
           type="tertiary"
           to="/signin"
         >
           <div class="flex items-center fill-gray-700">
-            <span> Späť na prihlásenie </span>
+            <span> {{ $t('pageNotFound.backToLogin') }} </span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="32"
@@ -39,7 +39,7 @@ import AllButtonLink from '@/components/AllButtonLink.vue'
               ></path>
             </svg>
           </div>
-        </AllButtonLink>
+        </AppButtonLink>
       </div>
     </div>
   </div>
@@ -61,7 +61,7 @@ export default {
       }, 350)
     }
   },
-  components: [AllButtonLink]
+  components: [AppButtonLink]
 }
 </script>
 
