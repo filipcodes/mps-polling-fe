@@ -26,6 +26,8 @@ The MPS provides an immersive, hands-on experience where students can engage in 
 
 ✅ Admin functionalities like sending emails, reseting passwords etc.
 
+✅ Localization
+
 🔲 Interface for evaluation of users
 
 🔲 Separate interface for overlooking committees
