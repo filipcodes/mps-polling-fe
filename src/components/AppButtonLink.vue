@@ -65,6 +65,12 @@ export default {
         case 'alertClose':
           return 'text-gray-700 text-md font-bold bevan  bg-[#DEDEDE7F] px-4 py-2 hover:bg-gray-100 active:bg-gray-200'
           break
+        case 'adminButton':
+          return 'text-white text-lg font-bold bevan border-red-600 border-2 fill-white hover:fill-red-600 bg-red-600 px-4 py-2 hover:bg-white hover:text-red-600'
+          break
+        case 'adminButtonSecondary':
+          return 'text-red-600 text-lg font-bold bevan border-red-600 border-2 bg-white px-4 py-2 hover:bg-red-600 hover:text-white '
+          break
       }
     },
 

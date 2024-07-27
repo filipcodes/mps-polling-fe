@@ -11,14 +11,14 @@ import {
   setDoc
 } from 'firebase/firestore'
 </script>
+
 <template>
   <div class="roboto max-h-screen">
-    <h1 class="text-4xl font-bold roboto">Správca Hlasovania</h1>
-    <p>Sekcia na spravovanie hlasovaní</p>
-    <div class="flex flex-row gap-12">
+    <ViewHeader>Správa Hlasovania</ViewHeader>
+    <div class="flex flex-row gap-12 justify-center">
       <form
         @submit.prevent="handleCreatePoll"
-        @keydown.enter.prevent="console.log('enter')"
+        @keydown.enter.prevent="console.log('enter pressed')"
         class="shadow-lg p-4 rounded-lg border border-gray-200 max-w-96 text-center"
       >
         <h2 class="roboto text-3xl font-medium mb-4">Vytvoriť Hlasovanie</h2>
@@ -60,7 +60,7 @@ import {
             {{ option }}
             <AppButtonLink
               is="button"
-              type="secondary"
+              type="adminButtonSecondary"
               @click="handleRemoveOption(option)"
               >-</AppButtonLink
             >
@@ -73,58 +73,32 @@ import {
                 v-model="newPollOption"
                 placeholder="Nová možnosť"
               />
-              <AppButtonLink class="" @click="handleAddOption">+</AppButtonLink>
+              <AppButtonLink
+                class=""
+                type="adminButton"
+                @click="handleAddOption"
+                >+</AppButtonLink
+              >
             </form>
           </li>
         </ul>
-        <AppButtonLink submit class="w-full">Vytvoriť hlasovanie</AppButtonLink>
-      </form>
-
-      <ul v-if="activePolls && activePolls[0]" class="min-w-56">
-        <li
-          class="bg-white shadow-md rounded-md px-8 py-4 flex flex-col justify-between items-center border border-gray-200"
-          v-for="(poll, index) in activePolls"
-          :key="index"
+        <AppButtonLink submit type="adminButton" class="w-full"
+          >Vytvoriť hlasovanie</AppButtonLink
         >
-          <span class="font-medium text-lg mb-4">
-            {{ poll.name }}
-          </span>
-
-          <span class="mb-4"> {{ activeVotes }} hlasov </span>
-          <div class="grid grid-cols-3 gap-6 justify-center w-full mb-8">
-            <div class="flex flex-col items-center w-full">
-              <span
-                class="font-bold text-lg text-green-600 bg-green-100 py-2 px-4 rounded-sm"
-                >{{ currentVotesFor }}</span
-              >
-              <span>Za</span>
-            </div>
-            <div class="flex flex-col items-center w-full">
-              <span
-                class="font-bold text-lg text-red-600 bg-red-100 py-2 px-4 rounded-sm"
-                >{{ currentVotesAgainst }}</span
-              >
-              <span>Proti</span>
-            </div>
-            <div class="flex flex-col items-center w-full">
-              <span
-                class="font-bold text-lg text-gray-600 bg-gray-100 py-2 px-4 rounded-sm"
-                >{{ currentVotesGaveUp }}</span
-              >
-              <span>Vzdalo sa</span>
-            </div>
-          </div>
-
-          <AppButtonLink @click="handleCloseVote" class="w-full mt-4"
-            >Ukončiť hlasovanie</AppButtonLink
-          >
-        </li>
-      </ul>
+      </form>
+      <PollTracking
+        v-for="(activePoll, index) in activePolls"
+        :key="activePoll.name"
+        :activePoll="activePoll"
+      ></PollTracking>
     </div>
   </div>
 </template>
 
 <script>
+import ViewHeader from '@/components/adminDashboard/ViewHeader.vue'
+import PollTracking from '@/components/adminDashboard/PollTracking.vue'
+
 const db = getFirestore()
 let colRef = collection(db, 'polls')
 export default {
@@ -143,9 +117,7 @@ export default {
     }
   },
   mounted() {
-    console.log('mounter')
     const q = query(colRef, where('isActive', '==', true))
-    console.log('mounter')
 
     let polls = []
     // display activePolls on change in whatever
@@ -205,9 +177,10 @@ export default {
   },
   methods: {
     async handleCreatePoll() {
-      console.log('creating poll')
+      // poll document ID
       const randNum = Math.floor(1000000000 + Math.random() * 9000000000)
 
+      // create a document for the poll
       let docRef = doc(collection(db, 'polls'), randNum.toString())
       const newDocRef = await setDoc(docRef, {
         name: this.pollName,
@@ -217,13 +190,6 @@ export default {
         id: randNum.toString(),
         votes: []
       })
-
-      // const uhoh = doc(db, 'polls', newDocRef.id)
-      // await updateDoc(uhoh, {
-      //   id: newDocRef.id
-      // })
-
-      console.log()
     },
 
     // Option Manipulation
@@ -232,7 +198,6 @@ export default {
       this.newPollOption = ''
     },
     handleRemoveOption(option) {
-      console.log('removing option', option)
       this.pollOptions = this.pollOptions.filter((opt) => opt !== option)
     },
     isNumber(evt) {
@@ -243,10 +208,8 @@ export default {
       }
     },
     async handleCloseVote() {
-      console.log('closing vote')
-
       const pollDocRef = doc(collection(db, 'polls'), this.activePolls[0].id)
-      // what happens here?
+
       await updateDoc(pollDocRef, {
         isActive: false
       })
@@ -255,6 +218,10 @@ export default {
         location.reload()
       }, 1000)
     }
+  },
+  components: {
+    PollTracking,
+    AppButtonLink
   }
 }
 </script>

@@ -1,6 +1,7 @@
 <script setup>
 import AppButtonLink from '@/components/AppButtonLink.vue'
 </script>
+
 <template>
   <div
     :class="[
