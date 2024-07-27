@@ -1,6 +1,5 @@
 <script setup>
 import AppButtonLink from '@/components/AppButtonLink.vue'
-
 import {
   getFirestore,
   collection,
@@ -19,7 +18,7 @@ import {
     <div class="flex flex-row gap-12 justify-center">
       <form
         @submit.prevent="handleCreatePoll"
-        @keydown.enter.prevent="console.log('enter')"
+        @keydown.enter.prevent="console.log('enter pressed')"
         class="shadow-lg p-4 rounded-lg border border-gray-200 max-w-96 text-center"
       >
         <h2 class="roboto text-3xl font-medium mb-4">Vytvoriť Hlasovanie</h2>
@@ -61,7 +60,7 @@ import {
             {{ option }}
             <AppButtonLink
               is="button"
-              type="secondary"
+              type="adminButtonSecondary"
               @click="handleRemoveOption(option)"
               >-</AppButtonLink
             >
@@ -74,58 +73,24 @@ import {
                 v-model="newPollOption"
                 placeholder="Nová možnosť"
               />
-              <AppButtonLink class="" @click="handleAddOption">+</AppButtonLink>
+              <AppButtonLink
+                class=""
+                type="adminButton"
+                @click="handleAddOption"
+                >+</AppButtonLink
+              >
             </form>
           </li>
         </ul>
-        <AppButtonLink submit class="w-full">Vytvoriť hlasovanie</AppButtonLink>
+        <AppButtonLink submit type="adminButton" class="w-full"
+          >Vytvoriť hlasovanie</AppButtonLink
+        >
       </form>
       <PollTracking
         v-for="(activePoll, index) in activePolls"
         :key="activePoll.name"
         :activePoll="activePoll"
       ></PollTracking>
-
-      <!-- <ul v-if="activePolls && activePolls[0]" class="min-w-56">
-        <li
-          class="bg-white shadow-md rounded-md px-8 py-4 flex flex-col justify-between items-center border border-gray-200"
-          v-for="(poll, index) in activePolls"
-          :key="index"
-        >
-          <span class="font-medium text-lg mb-4">
-            {{ poll.name }}
-          </span>
-
-          <span class="mb-4"> {{ activeVotes }} hlasov </span>
-          <div class="grid grid-cols-3 gap-6 justify-center w-full mb-8">
-            <div class="flex flex-col items-center w-full">
-              <span
-                class="font-bold text-lg text-green-600 bg-green-100 py-2 px-4 rounded-sm"
-                >{{ currentVotesFor }}</span
-              >
-              <span>Za</span>
-            </div>
-            <div class="flex flex-col items-center w-full">
-              <span
-                class="font-bold text-lg text-red-600 bg-red-100 py-2 px-4 rounded-sm"
-                >{{ currentVotesAgainst }}</span
-              >
-              <span>Proti</span>
-            </div>
-            <div class="flex flex-col items-center w-full">
-              <span
-                class="font-bold text-lg text-gray-600 bg-gray-100 py-2 px-4 rounded-sm"
-                >{{ currentVotesGaveUp }}</span
-              >
-              <span>Vzdalo sa</span>
-            </div>
-          </div>
-
-          <AppButtonLink @click="handleCloseVote" class="w-full mt-4"
-            >Ukončiť hlasovanie</AppButtonLink
-          >
-        </li>
-      </ul> -->
     </div>
   </div>
 </template>
