@@ -9,6 +9,8 @@ import {
   doc,
   setDoc
 } from 'firebase/firestore'
+
+import { activePoll } from '@/states/activePoll.js'
 </script>
 <template>
   <section
@@ -26,7 +28,7 @@ import {
         <span class="bg-red-700 px-2 py-1 rounded-md">
           {{ getActivePoll.number + '.' }}</span
         >
-        {{ getActivePoll.name }}
+        {{ getActivePoll.title }}
         <span></span>
       </span>
 
@@ -38,6 +40,14 @@ import {
       <div class="flex flex-col gap-6 w-full">
         <!-- TODO: ENENTUALLY JUST GENERATE THIS THOURGH A V-FOR LOOP -->
         <PollTrackingVoteDisplay
+          v-for="option in getActivePoll.options"
+          :key="option.title"
+          :voteType="{ title: option.title, color: 'green' }"
+          :voteNumber="option.numberOfVotes"
+        >
+        </PollTrackingVoteDisplay>
+
+        <!-- <PollTrackingVoteDisplay
           :voteNumber="getActivePoll.votesFor"
           :voteType="voteTypes.for"
         ></PollTrackingVoteDisplay>
@@ -48,7 +58,7 @@ import {
         <PollTrackingVoteDisplay
           :voteNumber="getActivePoll.votesGaveUp"
           :voteType="voteTypes.gaveUp"
-        ></PollTrackingVoteDisplay>
+        ></PollTrackingVoteDisplay> -->
       </div>
     </div>
     <AppButtonLink
@@ -67,30 +77,13 @@ const db = getFirestore()
 let colRef = collection(db, 'polls')
 export default {
   name: 'PollTracking',
-  props: {
-    activePoll: {
-      type: Object,
-      required: true
-    }
-  },
+
   data() {
     return {
-      voteTypes: {
-        for: {
-          title: 'Za',
-          color: 'green'
-        },
-        against: {
-          title: 'Proti',
-          color: 'red'
-        },
-        gaveUp: {
-          title: 'Vzdal sa hlasovania',
-          color: 'gray'
-        }
-      }
+      //
     }
   },
+
   computed: {
     getActivePoll() {
       const noPoll = {
@@ -100,12 +93,13 @@ export default {
         votesAgainst: 0,
         votesGaveUp: 0
       }
-      return this.activePoll ? this.activePoll : noPoll
+      return activePoll ? activePoll : noPoll
     }
   },
   components: {
     AppButtonLink
   },
+
   methods: {
     async handleCloseVote() {
       const pollDocRef = doc(colRef, this.activePoll.id)

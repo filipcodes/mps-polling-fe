@@ -21,7 +21,7 @@ export default {
       }
     },
     voteType: {
-      type: String,
+      type: Object,
       required: true
     }
   }

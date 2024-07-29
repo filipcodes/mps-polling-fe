@@ -10,6 +10,8 @@ import {
   doc,
   setDoc
 } from 'firebase/firestore'
+
+import { activePoll } from '@/states/activePoll.js'
 </script>
 
 <template>
@@ -86,11 +88,7 @@ import {
           >Vytvoriť hlasovanie</AppButtonLink
         >
       </form>
-      <PollTracking
-        v-for="(activePoll, index) in activePolls"
-        :key="activePoll.name"
-        :activePoll="activePoll"
-      ></PollTracking>
+      <PollTracking :activePoll="activePoll"></PollTracking>
     </div>
   </div>
 </template>
@@ -127,14 +125,14 @@ export default {
 
         querySnapshot.forEach((doc) => {
           if (doc.data().isActive) {
-            console.log(doc.data())
             polls.push(doc.data())
           }
         })
+
         if (polls[0] && polls[0].isActive) {
           // there have been changes in active polls
           console.log('there are some actual polls')
-          this.activePolls = polls
+          activePoll = polls[0]
         }
 
         if (this.activePolls?.length > 0 && polls[0] && polls[0].isActive) {
@@ -159,9 +157,9 @@ export default {
                   }
 
                   ;[
-                    this.currentVotesFor,
-                    this.currentVotesAgainst,
-                    this.currentVotesGaveUp
+                    activePoll.options[0].numberOfVotes,
+                    activePoll.options[1].numberOfVotes,
+                    activePoll.options[2].numberOfVotes
                   ] = [votesFor, votesAgainst, votesGaveUp]
                 })
               }
