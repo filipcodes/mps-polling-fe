@@ -1,12 +1,13 @@
 import { reactive } from 'vue'
 
-export const activePoll = reactive({
-  title: 'Kto je najlepší programátor?',
-  number: 1,
-  options: [
-    {
-      title: 'Filip',
-      numberOfVotes: 0
-    }
-  ]
+export let activePoll = reactive({
+  activePollObject: {
+    // name: 'Žiadne aktívne hlasovanie',
+    // number: 1,
+    // options: []
+  },
+
+  changeActivePoll(newPoll) {
+    this.activePollObject = newPoll
+  }
 })

@@ -111,14 +111,11 @@ router.beforeEach(async (to, from, next) => {
 
     next('/signIn')
   } else if (to.matched.some((record) => record.meta.filipAuth)) {
-    console.log('guard4')
-
     if (await getCurrentUser()) {
       if (
         user.data.email === 'filipsipo@gmail.com' ||
         user.data.email === 'filip.sipos@student.leaf.academy'
       ) {
-        console.log('welcome, lord filip')
         next()
       } else {
         console.error('You are not Filip. I hereby banish you')

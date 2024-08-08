@@ -1,7 +1,7 @@
 <template>
   <div class="flex gap-4 items-center w-full">
     <span
-      :class="`font-bold text-lg text-${voteType.color}-600 bg-${voteType.color}-100 py-2 px-4 rounded-sm`"
+      :class="`font-bold text-lg text-green-600 bg-green-100 py-2 px-4 rounded-sm`"
       >{{ voteNumber }}</span
     >
     <span class="roboto font-medium tracking-wide">{{ voteType.title }}</span>

@@ -88,7 +88,7 @@ import { activePoll } from '@/states/activePoll.js'
           >Vytvoriť hlasovanie</AppButtonLink
         >
       </form>
-      <PollTracking :activePoll="activePoll"></PollTracking>
+      <PollTracking :activePoll="activePoll.activePollObject"></PollTracking>
     </div>
   </div>
 </template>
@@ -108,10 +108,7 @@ export default {
       pollOptions: ['Za', 'Proti', 'Vzdal sa hlasovania'],
       newPollOption: '',
       activePolls: null,
-      activeVotes: 0,
-      currentVotesFor: 0,
-      currentVotesAgainst: 0,
-      currentVotesGaveUp: 0
+      activeVotes: 0
     }
   },
   mounted() {
@@ -129,41 +126,38 @@ export default {
           }
         })
 
-        if (polls[0] && polls[0].isActive) {
+        if (polls[0]) {
           // there have been changes in active polls
-          console.log('there are some actual polls')
-          activePoll = polls[0]
+          console.log('there are some actual polls', ':', polls)
+          activePoll.changeActivePoll(polls[0])
+          console.log(activePoll.activePollObject)
         }
 
-        if (this.activePolls?.length > 0 && polls[0] && polls[0].isActive) {
-          console.log('number of active polls:', this.activePolls.length)
-          console.log(this.activePolls[0].id)
+        if (polls[0]) {
           setTimeout(() => {
-            var unsubVotes = onSnapshot(
-              collection(db, this.activePolls[0].id),
-              (snap) => {
-                console.log('change in vote number detected')
-                this.activeVotes = snap.size
-                let votesFor = 0,
-                  votesAgainst = 0,
-                  votesGaveUp = 0
-                snap.forEach((doc) => {
-                  if (doc.data().vote === 'Proti') {
-                    votesAgainst++
-                  } else if (doc.data().vote === 'Za') {
-                    votesFor++
-                  } else {
-                    votesGaveUp++
-                  }
-
-                  ;[
-                    activePoll.options[0].numberOfVotes,
-                    activePoll.options[1].numberOfVotes,
-                    activePoll.options[2].numberOfVotes
-                  ] = [votesFor, votesAgainst, votesGaveUp]
+            var unsubVotes = onSnapshot(collection(db, polls[0].id), (snap) => {
+              console.log('change in vote number detected')
+              this.activeVotes = snap.size
+              let votes = []
+              let options = activePoll.activePollObject.options
+              for (const option of options) {
+                votes.push({
+                  title: option,
+                  numberOfVotes: 0
                 })
               }
-            )
+
+              activePoll.activePollObject.votes = votes
+
+              // assign the doc into whichever option meets the title
+              snap.forEach((doc) => {
+                console.log(doc.data().vote)
+                let option = activePoll.activePollObject.votes.find(
+                  (opt) => opt.title === doc.data().vote
+                )
+                option.numberOfVotes++
+              })
+            })
           }, 1000)
         } else {
           console.log('there is zero active polls')
@@ -173,6 +167,7 @@ export default {
       console.log('an error occured', error)
     }
   },
+
   methods: {
     async handleCreatePoll() {
       // poll document ID
@@ -195,9 +190,11 @@ export default {
       this.pollOptions.push(this.newPollOption)
       this.newPollOption = ''
     },
+
     handleRemoveOption(option) {
       this.pollOptions = this.pollOptions.filter((opt) => opt !== option)
     },
+
     isNumber(evt) {
       evt = evt ? evt : window.event
       var charCode = evt.which ? evt.which : evt.keyCode
@@ -205,6 +202,7 @@ export default {
         evt.preventDefault()
       }
     },
+
     async handleCloseVote() {
       const pollDocRef = doc(collection(db, 'polls'), this.activePolls[0].id)
 
