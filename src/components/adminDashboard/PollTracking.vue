@@ -9,6 +9,8 @@ import {
   doc,
   setDoc
 } from 'firebase/firestore'
+
+import { activePoll } from '@/states/activePoll.js'
 </script>
 <template>
   <section
@@ -19,39 +21,43 @@ import {
         Aktívne Hlasovanie
       </h2>
     </div>
-    <div class="w-full p-4 rounded-md border shadow-sm">
+    <div
+      v-if="activePoll.activePollObject.isActive"
+      class="w-full p-4 rounded-md border shadow-sm"
+    >
       <span
         class="flex font-semibold bg-red-600 rounded-md p-2 text-xl mb-4 items-center justify-between gap-4 text-white"
       >
         <span class="bg-red-700 px-2 py-1 rounded-md">
-          {{ getActivePoll.number + '.' }}</span
+          {{ activePoll.activePollObject.number + '.' }}</span
         >
-        {{ getActivePoll.name }}
+        {{ activePoll.activePollObject.name }}
         <span></span>
       </span>
 
       <span
         class="mb-4 block text-center font-bold p-3 text-lg roboto border-b"
       >
-        {{ getActivePoll.activeVotes || 0 }} hlasov
+        {{ getAllVotes || 0 }} hlasov
       </span>
       <div class="flex flex-col gap-6 w-full">
-        <!-- TODO: ENENTUALLY JUST GENERATE THIS THOURGH A V-FOR LOOP -->
         <PollTrackingVoteDisplay
-          :voteNumber="getActivePoll.votesFor"
-          :voteType="voteTypes.for"
-        ></PollTrackingVoteDisplay>
-        <PollTrackingVoteDisplay
-          :voteNumber="getActivePoll.votesAgainst"
-          :voteType="voteTypes.against"
-        ></PollTrackingVoteDisplay>
-        <PollTrackingVoteDisplay
-          :voteNumber="getActivePoll.votesGaveUp"
-          :voteType="voteTypes.gaveUp"
-        ></PollTrackingVoteDisplay>
+          v-for="option in activePoll.activePollObject.votes"
+          :key="option.title"
+          :voteType="{ title: option.title, color: 'green' }"
+          :voteNumber="option.numberOfVotes"
+        >
+        </PollTrackingVoteDisplay>
       </div>
     </div>
+    <p
+      class="text-gray-500 roboto italic w-full text-center h-full flex items-center justify-center"
+      v-if="!activePoll.activePollObject.name"
+    >
+      Žiadne aktívne hlasovanie
+    </p>
     <AppButtonLink
+      v-if="activePoll.activePollObject.name"
       type="adminButton"
       @click="handleCloseVote"
       class="w-full mt-4"
@@ -67,48 +73,21 @@ const db = getFirestore()
 let colRef = collection(db, 'polls')
 export default {
   name: 'PollTracking',
-  props: {
-    activePoll: {
-      type: Object,
-      required: true
-    }
-  },
-  data() {
-    return {
-      voteTypes: {
-        for: {
-          title: 'Za',
-          color: 'green'
-        },
-        against: {
-          title: 'Proti',
-          color: 'red'
-        },
-        gaveUp: {
-          title: 'Vzdal sa hlasovania',
-          color: 'gray'
-        }
-      }
-    }
-  },
-  computed: {
-    getActivePoll() {
-      const noPoll = {
-        name: 'No Active Poll',
-        activeVotes: 0,
-        votesFor: 0,
-        votesAgainst: 0,
-        votesGaveUp: 0
-      }
-      return this.activePoll ? this.activePoll : noPoll
-    }
-  },
   components: {
     AppButtonLink
   },
+
+  computed: {
+    getAllVotes() {
+      return activePoll.activePollObject.votes.reduce((acc, curr) => {
+        return acc + curr.numberOfVotes
+      }, 0)
+    }
+  },
+
   methods: {
     async handleCloseVote() {
-      const pollDocRef = doc(colRef, this.activePoll.id)
+      const pollDocRef = doc(colRef, activePoll.activePollObject.id)
 
       await updateDoc(pollDocRef, {
         isActive: false
