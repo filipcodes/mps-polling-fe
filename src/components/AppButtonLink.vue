@@ -36,7 +36,9 @@ export default {
           'underlined',
           'inactive',
           'pollOption',
-          'alertClose'
+          'alertClose',
+          'adminButton',
+          'adminButtonSecondary'
         ].includes(value)
     }
   },
