@@ -42,12 +42,12 @@ As of now, there are two interfaces available in the application:
 
 #### Attendee
 
-![Attendee interface of the MPS voting system](image.png)
+![Attendee interface of the MPS voting system](docs/userInterface.png)
 The attendee interface is designed for all attendees of the conference, and allows each user to vote in polls created in the admin interface.
 
 #### Admin
 
-![Admin interface of the MPS voting system](image-1.png)
+![Admin interface of the MPS voting system](docs/adminInterface.png)
 
 The admin interface is designed for management of users, committees, and polls themselves.
 
