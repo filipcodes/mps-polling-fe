@@ -88,12 +88,9 @@ import { alert } from '@/states/bottomAlert.js'
     <div class="">
       <span
         v-if="user.committee && !isEditing"
-        :class="[
-          'w-fit block px-1 rounded-sm border-2',
-          tags.committees[user.committee]
-        ]"
+        :class="['w-fit block px-1 rounded-sm ', getUserCommitteeColorBg(user)]"
       >
-        {{ user.committee }}
+        {{ getUserCommittee(user) }}
       </span>
       <div class="" v-if="isEditing">
         <select
@@ -194,6 +191,51 @@ export default {
   },
 
   methods: {
+    getUserCommittee(currentUser) {
+      let final = ''
+      switch (currentUser.committee) {
+        case 'Komisia školstva a mládeže':
+          final = 'Školstvo'
+          break
+        case 'Komisia kultúrneho rozvoja':
+          final = 'Kultúra'
+          break
+        case 'Komisia sociálnych vecí':
+          final = 'Soc. veci'
+          break
+        case 'Komisia územného plánovania a životného prostredia':
+          final = 'Územné plánovanie'
+          break
+        case 'Komisia zdravotníctva a zdravotnej starostlivosti':
+          final = 'Zdravotníctvo'
+          break
+      }
+      return final
+    },
+
+    getUserCommitteeColorBg(currentUser) {
+      let final = ''
+      console.log('colorBg')
+      switch (this.getUserCommittee(currentUser)) {
+        case 'Školstvo':
+          final = 'bg-blue-200 border-blue-400 text-blue-800'
+          break
+        case 'Kultúra':
+          final = 'bg-yellow-200 border-yellow-400 text-yellow-800'
+          break
+        case 'Soc. veci':
+          final = 'bg-red-200 border-red-400  text-red-800'
+          break
+        case 'Územné plánovanie':
+          final = 'bg-green-200 border-green-400 text-green-800'
+          break
+        case 'Zdravotníctvo':
+          final = 'bg-pink-200 border-pink-400 text-pink-800'
+          break
+      }
+      return final
+    },
+
     async copyToClipboard(code) {
       try {
         await navigator.clipboard.writeText(code)

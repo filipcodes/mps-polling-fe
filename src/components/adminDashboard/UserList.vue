@@ -205,7 +205,7 @@ export default {
 .table-grid {
   display: grid;
   grid-template-columns:
-    minmax(120px, 20%) 28% minmax(105px, 14%) minmax(105px, 14%)
+    minmax(120px, 20%) 25% minmax(105px, 16%) minmax(105px, 16%)
     1fr 12%;
 }
 

@@ -111,6 +111,7 @@ export default {
       activeVotes: 0
     }
   },
+
   mounted() {
     const q = query(colRef, where('isActive', '==', true))
 
@@ -119,7 +120,6 @@ export default {
     try {
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         console.log('change in active polls detected')
-
         querySnapshot.forEach((doc) => {
           if (doc.data().isActive) {
             polls.push(doc.data())
@@ -136,7 +136,7 @@ export default {
         if (polls[0]) {
           setTimeout(() => {
             var unsubVotes = onSnapshot(collection(db, polls[0].id), (snap) => {
-              console.log('change in vote number detected')
+              // console.log('change in vote number detected')
               this.activeVotes = snap.size
               let votes = []
               let options = activePoll.activePollObject.options

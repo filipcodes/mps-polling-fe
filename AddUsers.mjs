@@ -44,6 +44,38 @@ export const db = getFirestore(FirebaseApp)
 
 const auth = getAuth()
 
+// let testUser = {
+//   email: 'bartekovabibiana@gmail.com',
+//   code: '881140',
+//   name: 'Bibiana Barteková',
+//   committee: 'Komisia kultúrneho rozvoja',
+//   party: 'Progresívna pravica'
+// }
+// setTimeout(async () => {
+//   try {
+//     const userCredential = await createUserWithEmailAndPassword(
+//       auth,
+//       testUser.email,
+//       testUser.code
+//     )
+
+//     let user = userCredential.user
+
+//     await setDoc(doc(db, 'users', user.uid), {
+//       name: testUser.name,
+//       email: testUser.email,
+//       code: testUser.code,
+//       committee: testUser.committee,
+//       party: testUser.party
+//     })
+
+//     console.log(`succesfuly created user with email: ${testUser.email}`)
+//   } catch (error) {
+//     console.error(`error creating user with email: ${testUser.email}`)
+//     console.error(error)
+//   }
+// }, 3000)
+
 setTimeout(async () => {
   for (const attendee of attendees) {
     try {
@@ -69,4 +101,4 @@ setTimeout(async () => {
       console.error(error)
     }
   }
-}, 2000)
+}, 3000)

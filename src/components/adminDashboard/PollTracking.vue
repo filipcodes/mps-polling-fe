@@ -7,13 +7,15 @@ import {
   onSnapshot,
   updateDoc,
   doc,
-  setDoc
+  setDoc,
+  getDoc
 } from 'firebase/firestore'
 
 import { activePoll } from '@/states/activePoll.js'
 </script>
 <template>
   <section
+    :key="pollTracking"
     class="bg-white max-w-96 shadow-md rounded-md px-8 py-4 flex flex-col justify-between items-center border border-gray-200"
   >
     <div class="">
@@ -51,8 +53,12 @@ import { activePoll } from '@/states/activePoll.js'
       </div>
     </div>
     <p
+      :key="noActivePollKey"
       class="text-gray-500 roboto italic w-full text-center h-full flex items-center justify-center"
-      v-if="!activePoll.activePollObject.name"
+      v-if="
+        !activePoll.activePollObject.name ||
+        !activePoll.activePollObject.isActive
+      "
     >
       Žiadne aktívne hlasovanie
     </p>
@@ -77,6 +83,13 @@ export default {
     AppButtonLink
   },
 
+  data() {
+    return {
+      pollTracking: 0,
+      noActivePollKey: 0
+    }
+  },
+
   computed: {
     getAllVotes() {
       return activePoll.activePollObject.votes.reduce((acc, curr) => {
@@ -87,14 +100,23 @@ export default {
 
   methods: {
     async handleCloseVote() {
+      console.log('Closing vote')
       const pollDocRef = doc(colRef, activePoll.activePollObject.id)
+      console.log(pollDocRef)
 
       await updateDoc(pollDocRef, {
         isActive: false
       })
 
+      const updatedPollDoc = await getDoc(pollDocRef)
+      console.log('Updated Poll Document:', updatedPollDoc.data())
+      activePoll.changeActivePoll(updatedPollDoc.data())
+
+      //tuto treba updatenut ActivePoll?
       setTimeout(() => {
-        location.reload()
+        this.pollTracking++
+        this.noActivePollKey++
+        // location.reload()
       }, 1000)
     }
   }

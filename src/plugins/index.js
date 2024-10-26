@@ -39,9 +39,9 @@ export const i18n = createI18n({
           table: {
             name: 'Meno',
             email: 'Email',
-            party: 'Strana',
-            committee: 'Výor',
-            code: ' Poslanecký Kód',
+            party: 'Ideológia',
+            committee: 'Komisia',
+            code: 'Kód',
             actions: 'Akcie',
 
             actionDescriptions: {
