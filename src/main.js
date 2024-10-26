@@ -1,6 +1,5 @@
 // Vue Setup and styles
 import { createApp } from 'vue'
-import './index.css'
 import App from './App.vue'
 import VOtpInput from 'vue3-otp-input'
 import { registerPlugins } from '@/plugins'
@@ -52,7 +51,6 @@ onAuthStateChanged(auth, (detectedUser) => {
     user.setSignedIn(true)
     user.setUser(detectedUser)
     console.log('User signed in')
-    console.log(detectedUser)
   } else {
   }
 })

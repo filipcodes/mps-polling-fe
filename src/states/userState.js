@@ -6,7 +6,6 @@ export const user = reactive({
 
   setSignedIn(value) {
     if (typeof value !== 'boolean') {
-      console.log(typeof value)
       console.error(
         'A non boolean value has been passed to the setSignedIn method of userState'
       )

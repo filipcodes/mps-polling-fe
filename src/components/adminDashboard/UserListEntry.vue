@@ -236,7 +236,7 @@ export default {
           this.resetUserCode()
         }
 
-        // TODO Also compare to other codes in the database
+        //TODO: Also compare to other codes in the database
 
         await updateDoc(userRef, {
           code: newCode

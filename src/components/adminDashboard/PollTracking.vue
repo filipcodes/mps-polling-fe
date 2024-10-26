@@ -14,7 +14,7 @@ import { activePoll } from '@/states/activePoll.js'
 </script>
 <template>
   <section
-    class="bg-white shadow-md rounded-md px-8 py-4 flex flex-col justify-between items-center border border-gray-200"
+    class="bg-white max-w-96 shadow-md rounded-md px-8 py-4 flex flex-col justify-between items-center border border-gray-200"
   >
     <div class="">
       <h2 class="roboto text-3xl font-medium mb-4 text-center">

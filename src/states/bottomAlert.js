@@ -1,4 +1,7 @@
 import { reactive } from 'vue'
+import { user } from '@/states/userState'
+import { doc, addDoc, collection } from 'firebase/firestore'
+import { getFirestore } from 'firebase/firestore'
 
 export const alert = reactive({
   isVisible: false,
@@ -8,6 +11,8 @@ export const alert = reactive({
   show(text) {
     this.text = text
     this.isVisible = true
+
+    addActionToLog(text)
     setTimeout(() => {
       this.isVisible = false
     }, 4000)
@@ -27,3 +32,13 @@ export const alert = reactive({
     this.isVisible = false
   }
 })
+
+const addActionToLog = async (actionDescription) => {
+  console.log('pushing firestore')
+  const db = getFirestore()
+  await addDoc(collection(db, 'actionLog'), {
+    time: new Date().toISOString(),
+    description: actionDescription,
+    user: user.data.email
+  })
+}

@@ -120,19 +120,19 @@ export default {
   },
 
   async mounted() {
-    // this.fetchUsersFromFirestore()
-    this.users = [
-      {
-        name: 'Janko Hraško',
-        email: 'janko@hrasko.com',
-        code: '123456'
-      },
-      {
-        name: 'Filip Sipos',
-        email: 'filip.sipos@student.leaf.academy',
-        code: '654321'
-      }
-    ]
+    this.fetchUsersFromFirestore()
+    // this.users = [
+    //   {
+    //     name: 'Janko Hraško',
+    //     email: 'janko@hrasko.com',
+    //     code: '123456'
+    //   },
+    //   {
+    //     name: 'Filip Sipos',
+    //     email: 'filip.sipos@student.leaf.academy',
+    //     code: '654321'
+    //   }
+    // ]
   },
 
   computed: {

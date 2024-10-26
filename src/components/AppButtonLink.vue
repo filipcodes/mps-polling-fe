@@ -59,10 +59,10 @@ export default {
           return 'text-gray-400 underline px-2 hover:no-underline active:bg-gray-100'
           break
         case 'inactive':
-          return 'text-gray-400 text-lg bevan bg-gray-200 border-2 px-4 py-2 fill-gray-400  cursor-not-allowed pointer-events-none'
+          return 'text-gray-400 text-lg bevan bg-gray-200 border-2 px-2 py-2 fill-gray-400  cursor-not-allowed pointer-events-none'
           break
         case 'pollOption':
-          return 'text-blue-500 bevan bg-blue-200 px-2  py-2 fill-blue-400 hover:bg-blue-300'
+          return 'text-blue-500 text-lg bevan bg-blue-200 px-2 border-2 border-blue-200 hover:border-blue-300  py-2 fill-blue-400 hover:bg-blue-300'
           break
         case 'alertClose':
           return 'text-gray-700 text-md font-bold bevan  bg-[#DEDEDE7F] px-4 py-2 hover:bg-gray-100 active:bg-gray-200'
