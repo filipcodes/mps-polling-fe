@@ -50,6 +50,10 @@ const routes = [
       {
         path: '/admin/settings',
         component: () => import('@/views/AdminHistory.vue')
+      },
+      {
+        path: '/admin/descants',
+        component: () => import('@/views/AdminCreateDescant.vue')
       }
     ]
   },

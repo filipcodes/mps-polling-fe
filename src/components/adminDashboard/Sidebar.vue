@@ -68,6 +68,7 @@ import { mdiVote } from '@mdi/js'
 import { mdiAccountMultiple } from '@mdi/js'
 import { mdiHistory } from '@mdi/js'
 import { mdiCog } from '@mdi/js'
+import { mdiChat } from '@mdi/js'
 
 export default {
   name: 'Sidebar',
@@ -91,14 +92,14 @@ export default {
           route: '/admin/polls'
         },
         {
+          name: 'Rozprava',
+          icon: mdiChat,
+          route: '/admin/descants'
+        },
+        {
           name: 'História',
           icon: mdiHistory,
           route: '/admin/history'
-        },
-        {
-          name: 'Nastavenia',
-          icon: mdiCog,
-          route: '/admin/settings'
         }
       ]
     }

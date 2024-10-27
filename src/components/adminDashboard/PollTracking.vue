@@ -12,6 +12,7 @@ import {
 } from 'firebase/firestore'
 
 import { activePoll } from '@/states/activePoll.js'
+import { closeActivePoll } from '@/utils/closePoll.js'
 </script>
 <template>
   <section
@@ -100,23 +101,12 @@ export default {
 
   methods: {
     async handleCloseVote() {
-      console.log('Closing vote')
-      const pollDocRef = doc(colRef, activePoll.activePollObject.id)
-      console.log(pollDocRef)
+      await closeActivePoll()
 
-      await updateDoc(pollDocRef, {
-        isActive: false
-      })
-
-      const updatedPollDoc = await getDoc(pollDocRef)
-      console.log('Updated Poll Document:', updatedPollDoc.data())
-      activePoll.changeActivePoll(updatedPollDoc.data())
-
-      //tuto treba updatenut ActivePoll?
+      //update the view
       setTimeout(() => {
         this.pollTracking++
         this.noActivePollKey++
-        // location.reload()
       }, 1000)
     }
   }
