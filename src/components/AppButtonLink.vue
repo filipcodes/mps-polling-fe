@@ -53,7 +53,7 @@ export default {
           return 'text-blue-500 text-lg font-bold bevan border-blue-500 border-2 bg-white px-4 py-2 hover:bg-blue-500 hover:text-white '
           break
         case 'tertiary':
-          return 'text-gray-700 text-lg font-bold bevan  bg-white px-4 py-2 hover:bg-gray-100 active:bg-gray-200'
+          return 'text-gray-700 text-md md:text-lg font-bold bevan  bg-white px-4 py-2 hover:bg-gray-100 active:bg-gray-200'
           break
         case 'underlined':
           return 'text-gray-400 underline px-2 hover:no-underline active:bg-gray-100'
