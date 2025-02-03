@@ -120,7 +120,7 @@ export default {
     try {
       //create a listener for the active polls, and update the activePolls array
       console.log('setting up the activePolls listener')
-      const unsubscribe = onSnapshot(activePollQuerry, (querySnapshot) => {
+      this.unsubscribePolls = onSnapshot(activePollQuerry, (querySnapshot) => {
         console.log('change in active polls detected')
 
         const activePolls = querySnapshot.docs.map((doc) => doc.data())
@@ -138,6 +138,14 @@ export default {
     } catch (error) {
       console.log('an error occured', error)
     }
+  },
+
+  unmounted() {
+    console.log('Cleaning up the listeners')
+    if (this.unsubscribePolls) this.unsubscribePolls()
+    if (this.unsubscribeVotes) this.unsubscribeVotes()
+
+    console.log(this.unsubscribePolls, this.unsubscribePolls)
   },
 
   methods: {
@@ -160,9 +168,14 @@ export default {
     listenForVotes(pollId) {
       console.log(`Setting up vote listener for poll ID: ${pollId}`)
 
+      if (this.unsubscribeVotes) {
+        console.log('🔄 Removing old vote listener')
+        this.unsubscribeVotes()
+      }
+
       const voteCollectionRef = collection(db, pollId)
 
-      onSnapshot(voteCollectionRef, (snapshot) => {
+      this.unsubscribeVotes = onSnapshot(voteCollectionRef, (snapshot) => {
         console.log('Change in vote number detected')
 
         this.activeVotes = snapshot.size
