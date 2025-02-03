@@ -31,12 +31,12 @@ import Cookies from 'js-cookie'
         hlasovanie {{ poll.number }}: <span>{{ poll.name }}</span>
       </h3>
       <AppButtonLink
-        :type="selected && isActive ? 'primary' : 'inactive'"
+        :type="selectedOption && isActive ? 'primary' : 'inactive'"
         class="w-full sm:w-fit"
         @click="handleVote"
       >
         <div class="flex items-center gap-3 justify-center bevan">
-          {{ isActive ? 'Hlasovať' : 'Ohdlasované' }}
+          {{ isActive ? 'Hlasovať' : 'Odhlasované' }}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -55,9 +55,11 @@ import Cookies from 'js-cookie'
       <AppButtonLink
         v-for="option in poll.options"
         :type="isActive ? 'pollOption' : 'inactive'"
-        @click="selected = option"
+        @click="selectedOption = option"
         :class="[
-          selected === option ? 'outline-2 outline-blue-700 shadow-blue' : '',
+          selectedOption === option
+            ? 'outline-2 outline-blue-700 shadow-blue'
+            : '',
           'last:col-span-2 last:sm:col-span-1'
         ]"
         >{{ option }}</AppButtonLink
@@ -71,56 +73,64 @@ export default {
   name: 'PollPreview',
   data() {
     return {
-      selected: '',
+      selectedOption: '',
       isActive: true
     }
   },
   props: {
     poll: {
-      id: String,
       type: Object,
       required: true
     }
   },
-  mounted() {
-    console.log('I got mounted')
+
+  async mounted() {
+    // this should  check whether it is active. currently, it uses cookies, which is not the best practice
+
     const storedValue = Cookies.get('IsActive')
-    console.log(typeof storedValue)
     if (storedValue) {
       this.isActive = storedValue === 'true'
     }
+
+    // See whether the user has voted in the relevant poll by fetching firestore:
+    console.log('Poll ID: ', this.poll.id)
+    const db = getFirestore()
+    const pollRef = collection(db, this.poll.id)
+    const q = query(pollRef, where('userId', '==', user.data.uid))
+    const querySnapshot = await getDocs(q)
+    this.isActive = querySnapshot.empty
+    // If yes, set the this.isActive to false, as it should show that the user has already voted
+
+    // If no, set the this.isActive to true, as it should show that the user can vote
   },
 
   methods: {
     async handleVote() {
-      if (!this.selected || !this.isActive) return
-      this.finalSelection = this.selected
-      this.isActive = false
+      // If the user has not selected an option or the poll is not active, return
+      if (!this.selectedOption || !this.isActive) return
 
-      Cookies.set('IsActive', this.isActive, { expires: 7 }) // Expires in 7 days
-      // Assuming you have already initialized the Firestore instance
-      const db = getFirestore()
-      // Create a new vote object
-      // const relevantPoll = doc(db, 'polls', this.poll.id)
-      // await db.collection('votes').doc(pollId).set({
-      //   pollId: this.poll.id,
-      //   vote: this.selected
-      // })
-      const docRef = doc(collection(db, this.poll.id), user.data.uid) //TODO add user.data.uid after prod
-      await setDoc(docRef, {
-        pollId: this.poll.id,
-        userId: user.data.uid,
-        vote: this.selected
-      })
+      try {
+        const db = getFirestore()
 
-      // await updateDoc(relevantPoll, {
-      //   votes: ['kokot']
-      // })
+        const docRef = doc(collection(db, this.poll.id), user.data.uid) //TODO add user.data.uid after prod
+        await setDoc(docRef, {
+          pollId: this.poll.id,
+          userId: user.data.uid,
+          vote: this.selectedOption
+        })
+        // Set the isActive to false, as the user has voted
+        this.isActive = false
+        Cookies.set('IsActive', this.isActive, { expires: 7 }) // Expires in 7 days
+      } catch (error) {
+        console.error('Error handling vote: ', error)
+      }
     }
   },
+
   unmounted() {
     Cookies.remove('IsActive')
   },
+
   components: [AppButtonLink]
 }
 </script>
