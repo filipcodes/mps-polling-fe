@@ -42,6 +42,7 @@ import { activePoll } from '@/states/activePoll.js'
             v-model="pollNumber"
             @keypress="isNumber($event)"
             min="1"
+            max="999"
             type="number"
             required
             id="pollNumber"
@@ -88,7 +89,7 @@ import { activePoll } from '@/states/activePoll.js'
           >Vytvoriť hlasovanie</AppButtonLink
         >
       </form>
-      <PollTracking :activePoll="activePoll.activePollObject"></PollTracking>
+      <PollTracking :activePoll="activePoll.activePollObject" />
     </div>
   </div>
 </template>
@@ -107,65 +108,44 @@ export default {
       pollName: '',
       pollOptions: ['Za', 'Proti', 'Vzdal sa hlasovania'],
       newPollOption: '',
-      activePolls: null,
       activeVotes: 0
     }
   },
 
   mounted() {
-    const q = query(colRef, where('isActive', '==', true))
+    // querry all the polls that are active
+    const activePollQuerry = query(colRef, where('isActive', '==', true))
 
-    let polls = []
     // display activePolls on change in whatever
     try {
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      //create a listener for the active polls, and update the activePolls array
+      console.log('setting up the activePolls listener')
+      this.unsubscribePolls = onSnapshot(activePollQuerry, (querySnapshot) => {
         console.log('change in active polls detected')
-        querySnapshot.forEach((doc) => {
-          if (doc.data().isActive) {
-            polls.push(doc.data())
-          }
-        })
 
-        if (polls[0]) {
-          // there have been changes in active polls
-          console.log('there are some actual polls', ':', polls)
-          activePoll.changeActivePoll(polls[0])
-          console.log(activePoll.activePollObject)
-        }
+        const activePolls = querySnapshot.docs.map((doc) => doc.data())
 
-        if (polls[0]) {
-          setTimeout(() => {
-            var unsubVotes = onSnapshot(collection(db, polls[0].id), (snap) => {
-              // console.log('change in vote number detected')
-              this.activeVotes = snap.size
-              let votes = []
-              let options = activePoll.activePollObject.options
-              for (const option of options) {
-                votes.push({
-                  title: option,
-                  numberOfVotes: 0
-                })
-              }
+        if (activePolls.length > 0) {
+          const firstPoll = activePolls[0]
 
-              activePoll.activePollObject.votes = votes
+          activePoll.changeActivePoll(firstPoll)
 
-              // assign the doc into whichever option meets the title
-              snap.forEach((doc) => {
-                console.log(doc.data().vote)
-                let option = activePoll.activePollObject.votes.find(
-                  (opt) => opt.title === doc.data().vote
-                )
-                option.numberOfVotes++
-              })
-            })
-          }, 1000)
+          this.listenForVotes(firstPoll.id)
         } else {
-          console.log('there is zero active polls')
+          console.log('there are no active polls')
         }
       })
     } catch (error) {
       console.log('an error occured', error)
     }
+  },
+
+  unmounted() {
+    console.log('Cleaning up the listeners')
+    if (this.unsubscribePolls) this.unsubscribePolls()
+    if (this.unsubscribeVotes) this.unsubscribeVotes()
+
+    console.log(this.unsubscribePolls, this.unsubscribePolls)
   },
 
   methods: {
@@ -185,6 +165,39 @@ export default {
       })
     },
 
+    listenForVotes(pollId) {
+      console.log(`Setting up vote listener for poll ID: ${pollId}`)
+
+      if (this.unsubscribeVotes) {
+        console.log('🔄 Removing old vote listener')
+        this.unsubscribeVotes()
+      }
+
+      const voteCollectionRef = collection(db, pollId)
+
+      this.unsubscribeVotes = onSnapshot(voteCollectionRef, (snapshot) => {
+        console.log('Change in vote number detected')
+
+        this.activeVotes = snapshot.size
+
+        // Initialize vote counts using reduce
+        const votes = activePoll.activePollObject.options.map((option) => ({
+          title: option,
+          numberOfVotes: 0
+        }))
+
+        snapshot.forEach((doc) => {
+          const voteTitle = doc.data().vote
+          const voteOption = votes.find((opt) => opt.title === voteTitle)
+          if (voteOption) {
+            voteOption.numberOfVotes++
+          }
+        })
+
+        activePoll.activePollObject.votes = votes
+      })
+    },
+
     // Option Manipulation
     handleAddOption() {
       this.pollOptions.push(this.newPollOption)
@@ -201,18 +214,6 @@ export default {
       if (charCode > 31 && (charCode < 48 || charCode > 57)) {
         evt.preventDefault()
       }
-    },
-
-    async handleCloseVote() {
-      const pollDocRef = doc(collection(db, 'polls'), this.activePolls[0].id)
-
-      await updateDoc(pollDocRef, {
-        isActive: false
-      })
-
-      setTimeout(() => {
-        location.reload()
-      }, 1000)
     }
   },
   components: {
