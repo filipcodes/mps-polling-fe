@@ -18,7 +18,7 @@ export const i18n = createI18n({
       attendee: {
         welcomeMessage: 'Vitajte v hlasovacom systéme MPS 2024 ',
         activePolls: {
-          title: 'Aktuálne hlasovania',
+          title: 'Aktívne hlasovania',
           noActivePolls: 'Žiadne aktívne hlasovania',
           pollVoteAction: 'Hlasovať'
         },
