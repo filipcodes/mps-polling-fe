@@ -1,5 +1,7 @@
 <script setup>
 import { user } from '@/states/userState.js'
+import { getAuth, updateProfile } from 'firebase/auth'
+
 import {
   getFirestore,
   collection,
@@ -7,9 +9,11 @@ import {
   addDoc,
   query,
   where,
-  onSnapshot
+  onSnapshot,
+  updateDoc
 } from 'firebase/firestore'
 import { signIn } from '@/states/signInStates.js'
+import { alert } from '@/states/bottomAlert'
 </script>
 <template>
   <div class="px-2 pt-8 sm:p-8 min-h-screen grid items-center justify-center">
@@ -19,12 +23,18 @@ import { signIn } from '@/states/signInStates.js'
       >
         {{ $t('attendee.welcomeMessage') }}
       </h1>
+      <div class="flex w-full justify-center align-center"></div>
       <div class="flex flex-col items-center">
-        <h2
-          class="text-center mb-3 text-2xl roboto font-bold text-blue-600 tracking-wider bg-blue-100 rounded-full inline-block px-4 py-1"
-        >
-          {{ $t('attendee.activePolls.title') }}
-        </h2>
+        <div class="flex justify-between items-center w-full mb-2">
+          <h2
+            class="text-center text-lg md:text-2xl bevan font-bold text-blue-600 tracking-wider bg-blue-100 rounded-full inline-block px-4 py-1"
+          >
+            {{ $t('attendee.activePolls.title') }}
+          </h2>
+          <AppButtonLink type="tertiary" @click="signUpForDescant"
+            >Hlásiť sa do Rozpravy</AppButtonLink
+          >
+        </div>
         <ul
           :class="[
             'flex flex-col gap-3 bg-gray-200 p-2 w-full rounded-md min-h-96',
@@ -32,7 +42,7 @@ import { signIn } from '@/states/signInStates.js'
           ]"
         >
           <p
-            class="w-fit h-full font-bold tracking-wider text-xl text-gray-800"
+            class="w-fit h-full text-sm font-bold tracking-wider md:text-lg text-gray-600"
             v-if="!activePolls[0]"
           >
             {{ $t('attendee.activePolls.noActivePolls') }}
@@ -73,6 +83,7 @@ import { signIn } from '@/states/signInStates.js'
 import SignOutButton from '@/components/atendeeDashboard/SignOutButton.vue'
 import PollPreview from '@/components/atendeeDashboard/PollPreview.vue'
 import AppChangeLanguageButton from '@/components/AppChangeLanguageButton.vue'
+import AppButtonLink from '@/components/AppButtonLink.vue'
 
 export default {
   data() {
@@ -90,7 +101,6 @@ export default {
 
     // display activePolls on change
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      console.log(querySnapshot)
       const polls = []
       querySnapshot.forEach((doc) => {
         polls.push(doc.data())
@@ -98,6 +108,55 @@ export default {
 
       this.activePolls = polls
     })
+  },
+
+  methods: {
+    async signUpForDescant() {
+      const db = getFirestore()
+      if (!user.data.displayName) {
+        let newDisplayName = ''
+
+        // get user name from firestore
+        const userRef = collection(db, 'users')
+        const q = query(userRef, where('email', '==', user.data.email))
+        console.log('-----------------', user.data.email)
+        const querySnapshot = await getDocs(q)
+        console.log(querySnapshot)
+        querySnapshot.forEach((doc) => {
+          newDisplayName = doc.data().name
+        })
+
+        console.log(newDisplayName)
+        //update user name in auth
+        const auth = getAuth()
+        await updateProfile(auth.currentUser, {
+          displayName: newDisplayName
+        })
+
+        // get new user data from auth
+        const newUser = auth.currentUser
+        console.log(newUser)
+        user.setUser(newUser)
+      }
+      const descantRef = collection(db, 'descants')
+      const q = query(descantRef, where('isActive', '==', true))
+      const querySnapshot = await getDocs(q)
+      if (querySnapshot.empty) {
+        alert.error('Nie je sa na čo hlásiť')
+        return
+      }
+      querySnapshot.forEach((doc) => {
+        let descant = doc.data()
+        let descantUsers = descant.usersSignedUp
+        console.log(user.data)
+        descantUsers.push({
+          name: user.data.displayName,
+          timeOfSignUp: new Date().toLocaleString()
+        })
+        updateDoc(doc.ref, { usersSignedUp: descantUsers })
+      })
+      alert.success('Prihlásenie úspešné')
+    }
   },
   components: [SignOutButton, PollPreview, AppChangeLanguageButton]
 }
