@@ -100,7 +100,7 @@ export default {
     const q = query(colRef, where('isActive', '==', true))
 
     // display activePolls on change
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    this.unsubscribePolls = onSnapshot(q, (querySnapshot) => {
       const polls = []
       querySnapshot.forEach((doc) => {
         polls.push(doc.data())
@@ -108,6 +108,10 @@ export default {
 
       this.activePolls = polls
     })
+  },
+
+  unmounted() {
+    if (this.unsubscribePolls) this.unsubscribePolls()
   },
 
   methods: {
@@ -135,16 +139,22 @@ export default {
 
         // get new user data from auth
         const newUser = auth.currentUser
-        console.log(newUser)
+
         user.setUser(newUser)
       }
+
+      // sign user up for descant
       const descantRef = collection(db, 'descants')
       const q = query(descantRef, where('isActive', '==', true))
+      // get all the active descants
       const querySnapshot = await getDocs(q)
       if (querySnapshot.empty) {
-        alert.error('Nie je sa na čo hlásiť')
+        alert.error('Rozprava nie je aktívna')
         return
       }
+      // Query the collection with the key of descant ID
+      // Add a document into the collection with the userName and time of sign up, the key for this document should be the user ID
+
       querySnapshot.forEach((doc) => {
         let descant = doc.data()
         let descantUsers = descant.usersSignedUp
