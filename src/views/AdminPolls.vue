@@ -119,7 +119,7 @@ export default {
     // display activePolls on change in whatever
     try {
       //create a listener for the active polls, and update the activePolls array
-      console.log('setting up the activePolls listener')
+
       this.unsubscribePolls = onSnapshot(activePollQuerry, (querySnapshot) => {
         console.log('change in active polls detected')
 
