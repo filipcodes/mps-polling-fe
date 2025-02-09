@@ -17,9 +17,10 @@ fs.createReadStream('data.csv')
   )
   .on('data', (data) => attendees.push(data))
   .on('end', () => {
-    console.log('atendees list created')
     console.log(attendees)
+    console.log('----- atendees list created -----')
   })
+  .on('error', (error) => console.error(error))
 
 // AUTHENTICATE THE ACCOUNTS AND ADD THEM TO THE FIRESTORE DB
 const firebaseConfig = {
@@ -43,38 +44,6 @@ const FirebaseApp = initializeApp(firebaseConfig)
 export const db = getFirestore(FirebaseApp)
 
 const auth = getAuth()
-
-// let testUser = {
-//   email: 'bartekovabibiana@gmail.com',
-//   code: '881140',
-//   name: 'Bibiana Barteková',
-//   committee: 'Komisia kultúrneho rozvoja',
-//   party: 'Progresívna pravica'
-// }
-// setTimeout(async () => {
-//   try {
-//     const userCredential = await createUserWithEmailAndPassword(
-//       auth,
-//       testUser.email,
-//       testUser.code
-//     )
-
-//     let user = userCredential.user
-
-//     await setDoc(doc(db, 'users', user.uid), {
-//       name: testUser.name,
-//       email: testUser.email,
-//       code: testUser.code,
-//       committee: testUser.committee,
-//       party: testUser.party
-//     })
-
-//     console.log(`succesfuly created user with email: ${testUser.email}`)
-//   } catch (error) {
-//     console.error(`error creating user with email: ${testUser.email}`)
-//     console.error(error)
-//   }
-// }, 3000)
 
 setTimeout(async () => {
   for (const attendee of attendees) {
@@ -101,4 +70,5 @@ setTimeout(async () => {
       console.error(error)
     }
   }
+  console.log('----- all users created -----')
 }, 3000)
