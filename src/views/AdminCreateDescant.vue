@@ -28,57 +28,78 @@ import {
         >Otvoriť Rozpravu</AppButtonLink
       >
     </div>
-    <div
-      v-if="activeDescant.activeDescantObject.isActive"
-      class="flex flex-col gap-6 items-center justify-center h-full"
-    >
-      <ul
+    <div class="flex gap-6">
+      <div
         v-if="activeDescant.activeDescantObject.isActive"
-        class="flex min-h-80 w-full flex-col gap-4 bg-gray-100 p-4 max-h-96 overflow-y-scroll rounded-md"
+        class="flex flex-col gap-6 items-center justify-center h-full"
       >
-        <!-- No one signed up into the discussion -->
-        <div
-          v-if="
-            activeDescant?.activeDescantObject?.usersSignedUp?.length < 1 ||
-            !activeDescant?.activeDescantObject?.usersSignedUp
-          "
-          class="w-full h-full flex items-center justify-center"
+        <ul
+          v-if="activeDescant.activeDescantObject.isActive"
+          class="flex min-h-80 w-full flex-col gap-4 bg-gray-100 p-4 max-h-96 overflow-y-scroll rounded-md"
         >
-          <span class="text-gray-600 italic"
-            >Nikto nie je prihlásený do rozpravy</span
+          <!-- No one signed up into the discussion -->
+          <div
+            v-if="
+              activeDescant?.activeDescantObject?.usersSignedUp?.length < 1 ||
+              !activeDescant?.activeDescantObject?.usersSignedUp
+            "
+            class="w-full h-full flex items-center justify-center"
           >
-        </div>
-
-        <!-- Users signed up into the discussion -->
-
-        <li
-          v-for="(user, index) in activeDescant?.activeDescantObject
-            ?.usersSignedUp"
-          :key="index"
-          class="border flex gap-6 bg-white border-gray-200 p-2 rounded-md shadow-sm"
-        >
-          <div class="flex justify-center items-center">
-            <span
-              class="font-bold text-xl bg-red-200 py-2 px-3 rounded-md text-red-700"
-              >{{ index + 1 }}</span
+            <span class="text-gray-600 italic"
+              >Nikto nie je prihlásený do rozpravy</span
             >
           </div>
-          <div class="">
-            <span class="font-bold text-lg">
-              {{ user.userName }}
-            </span>
-            <p class="text-gray-500 text-sm">
-              {{ user.signUpTime }}
-            </p>
-          </div>
-        </li>
-      </ul>
-      <AppButtonLink
-        v-if="activeDescant.activeDescantObject.isActive"
-        type="adminButton"
-        @click="closeActiveDescant()"
-        >Zatvoriť Rozpravu</AppButtonLink
-      >
+
+          <!-- Users signed up into the discussion -->
+
+          <li
+            v-for="(user, index) in activeDescant?.activeDescantObject
+              ?.usersSignedUp"
+            :key="index"
+            class="border flex gap-6 bg-white border-gray-200 p-2 rounded-md shadow-sm"
+          >
+            <div class="flex justify-center items-center">
+              <span
+                class="font-bold text-xl bg-red-200 py-2 px-3 rounded-md text-red-700"
+                >{{ index + 1 }}</span
+              >
+            </div>
+            <div class="">
+              <span class="font-bold text-lg">
+                {{ user.userName }}
+              </span>
+              <p class="text-gray-500 text-sm">
+                {{ user.signUpTime }}
+              </p>
+            </div>
+          </li>
+        </ul>
+        <AppButtonLink
+          v-if="activeDescant.activeDescantObject.isActive"
+          type="adminButton"
+          @click="closeActiveDescant()"
+          >Zatvoriť Rozpravu</AppButtonLink
+        >
+
+        <AppButtonLink
+          type="adminButton"
+          @click="pinDescantToSide()"
+          v-if="activeDescant.activeDescantObject.isActive"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M15 11.586V6h2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2h2v5.586l-2.707 1.707A.996.996 0 0 0 6 14v2a1 1 0 0 0 1 1h4v3l1 2 1-2v-3h4a1 1 0 0 0 1-1v-2a.996.996 0 0 0-.293-.707L15 11.586z"
+            ></path>
+          </svg>
+        </AppButtonLink>
+      </div>
+
+      <PinnedDescant v-if="pinnedDescant" :descant="pinnedDescant" />
     </div>
   </section>
 </template>
@@ -86,6 +107,7 @@ import {
 <script>
 import ViewHeader from '@/components/adminDashboard/ViewHeader.vue'
 import { createNewDescantInDatabase } from '@/utils/createDescant.js'
+import PinnedDescant from '@/components/adminDashboard/PinnedDescant.vue'
 export default {
   name: 'AdminCreateDescant',
 
@@ -122,6 +144,10 @@ export default {
 
       this.listenForSignUps(activeDescant.activeDescantObject.descantId)
     }
+
+    // check if there is a pinned descant
+    const pinnedDescant = localStorage.getItem('pinnedDescant')
+    if (pinnedDescant) this.pinnedDescant = JSON.parse(pinnedDescant)
   },
 
   beforeUnmount() {
@@ -202,7 +228,32 @@ export default {
       } catch (error) {
         console.log('An error occured while closing the signUp', error)
       }
+    },
+
+    // Pin the descant to the side
+    pinDescantToSide() {
+      console.log('Pinning the descant to the side')
+      // save the descant to local storage through cookies or something
+      localStorage.setItem(
+        'pinnedDescant',
+        JSON.stringify(activeDescant.activeDescantObject)
+      )
+      // fetch the pinned descant from local storage
+      const pinnedDescant = localStorage.getItem('pinnedDescant')
+      this.pinnedDescant = JSON.parse(pinnedDescant)
+      // show descant on the side
     }
+  },
+
+  data() {
+    return {
+      pinnedDescant: null
+    }
+  },
+
+  components: {
+    ViewHeader,
+    PinnedDescant
   }
 }
 </script>
