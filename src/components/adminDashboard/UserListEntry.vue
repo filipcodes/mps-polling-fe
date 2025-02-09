@@ -308,14 +308,11 @@ export default {
         await deleteDoc(userRef)
         this.$emit('deleted-user')
 
-        // Delete user from the Firebase auth
-        // try {
-        //   // Admin SDK needed for this to work
-        // } catch (error) {
-        //   console.log(error)
-        //   alert('Failed to delete user from auth', error)
-        // }
-        alert.success(`Používateľ "${this.user.name}" úspešne odstránený!`)
+        // Delete user from the Firebase auth SDK required
+
+        alert.success(
+          `Používateľ "${this.user.name}" úspešne odstránený z Firestore!`
+        )
       } catch (error) {
         alert.error(`Nepodarilo sa odstrániť používateľa "${this.user.name}"`)
         console.log(error)

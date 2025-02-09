@@ -7,10 +7,13 @@ import {
   collection,
   getDocs,
   addDoc,
+  setDoc,
   query,
   where,
   onSnapshot,
-  updateDoc
+  updateDoc,
+  getDoc,
+  doc
 } from 'firebase/firestore'
 import { signIn } from '@/states/signInStates.js'
 import { alert } from '@/states/bottomAlert'
@@ -31,8 +34,10 @@ import { alert } from '@/states/bottomAlert'
           >
             {{ $t('attendee.activePolls.title') }}
           </h2>
-          <AppButtonLink type="tertiary" @click="signUpForDescant"
-            >Hlásiť sa do Rozpravy</AppButtonLink
+          <AppButtonLink
+            :type="currentlyActiveDescantId ? 'primary' : 'tertiary'"
+            @click="signUpForDescant(currentlyActiveDescantId)"
+            >Hlásiť sa</AppButtonLink
           >
         </div>
         <ul
@@ -84,11 +89,13 @@ import SignOutButton from '@/components/atendeeDashboard/SignOutButton.vue'
 import PollPreview from '@/components/atendeeDashboard/PollPreview.vue'
 import AppChangeLanguageButton from '@/components/AppChangeLanguageButton.vue'
 import AppButtonLink from '@/components/AppButtonLink.vue'
+import { db } from '@/main.js'
 
 export default {
   data() {
     return {
-      activePolls: []
+      activePolls: [],
+      currentlyActiveDescantId: null
     }
   },
 
@@ -98,9 +105,13 @@ export default {
     const colRef = collection(db, 'polls')
 
     const q = query(colRef, where('isActive', '==', true))
+    const descantQuerry = query(
+      collection(db, 'descants'),
+      where('isActive', '==', true)
+    )
 
     // display activePolls on change
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    this.unsubscribePolls = onSnapshot(q, (querySnapshot) => {
       const polls = []
       querySnapshot.forEach((doc) => {
         polls.push(doc.data())
@@ -108,11 +119,28 @@ export default {
 
       this.activePolls = polls
     })
+
+    this.unsubscribeDescants = onSnapshot(descantQuerry, (querySnapshot) => {
+      if (querySnapshot.empty) {
+        this.currentlyActiveDescantId = null
+        return
+      }
+      querySnapshot.forEach((doc) => {
+        console.log(doc.data(), 'newly active descant')
+        // make descant available
+        this.currentlyActiveDescantId = doc.data().descantId
+        console.log(this.currentlyActiveDescantId, 'currentlyActiveDescantId')
+      })
+    })
+  },
+
+  unmounted() {
+    if (this.unsubscribePolls) this.unsubscribePolls()
+    if (this.unsubscribeDescants) this.unsubscribeDescants()
   },
 
   methods: {
-    async signUpForDescant() {
-      const db = getFirestore()
+    async signUpForDescant(descantId) {
       if (!user.data.displayName) {
         let newDisplayName = ''
 
@@ -126,35 +154,47 @@ export default {
           newDisplayName = doc.data().name
         })
 
-        console.log(newDisplayName)
         //update user name in auth
         const auth = getAuth()
+
         await updateProfile(auth.currentUser, {
           displayName: newDisplayName
         })
 
         // get new user data from auth
         const newUser = auth.currentUser
-        console.log(newUser)
+
         user.setUser(newUser)
       }
-      const descantRef = collection(db, 'descants')
-      const q = query(descantRef, where('isActive', '==', true))
-      const querySnapshot = await getDocs(q)
-      if (querySnapshot.empty) {
-        alert.error('Nie je sa na čo hlásiť')
+
+      // sign user up for descant
+
+      if (!this.currentlyActiveDescantId) {
+        alert.error('Hlásenie nie je možné')
         return
       }
-      querySnapshot.forEach((doc) => {
-        let descant = doc.data()
-        let descantUsers = descant.usersSignedUp
-        console.log(user.data)
-        descantUsers.push({
-          name: user.data.displayName,
-          timeOfSignUp: new Date().toLocaleString()
+
+      //check if the user is already signed up
+      const signedUpRef = doc(db, this.currentlyActiveDescantId, user.data.uid)
+      const signedUpDoc = await getDoc(signedUpRef)
+
+      if (signedUpDoc.exists()) {
+        alert.error('Už ste prihlásený')
+        return
+      }
+
+      // Query the collection with the key of descant ID
+      await setDoc(doc(db, this.currentlyActiveDescantId, user.data.uid), {
+        userName: user.data.displayName,
+        signUpTime: new Date().toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          fractionalSecondDigits: 1,
+          hour12: false
         })
-        updateDoc(doc.ref, { usersSignedUp: descantUsers })
       })
+
       alert.success('Prihlásenie úspešné')
     }
   },
