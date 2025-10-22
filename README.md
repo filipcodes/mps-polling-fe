@@ -1,6 +1,6 @@
-# Frontend for the Model Parliament of Slovakia Management System
+# [OUT OF SERVICE] Frontend for the Model Parliament of Slovakia Management System
 
-[![Website](https://img.shields.io/website?url=https%3A%2F%2Fmps-voting-system.web.app&style=flat)](https://mps-voting-system.web.app/) [![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/filipcodes/mps-polling-fe?style=flat)](https://github.com/filipcodes/mps-polling-fe/issues) ![GitHub repo size](https://img.shields.io/github/repo-size/filipcodes/mps-polling-fe?style=flat)
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fmps-voting-system.web.app&style=flat)](https://mps-voting-system.web.app/)  ![GitHub repo size](https://img.shields.io/github/repo-size/filipcodes/mps-polling-fe?style=flat)
 
 ## Project Description
 
@@ -28,11 +28,11 @@ The MPS provides an immersive, hands-on experience where students can engage in 
 
 ✅ Localization
 
-🔲 Interface for evaluation of users
+✅ Interface for evaluation of users
 
-🔲 Separate interface for overlooking committees
+✅ Separate interface for overlooking committees
 
-🔲 Proper security measures
+✅ Proper security measures
 
 🔲 Admin SDK Node.js server for handling admin requests
 
